@@ -35,3 +35,26 @@ class SFxGetDimension : SFxClient {
         $this.Uri = $this.Uri + '/{0}/{1}' -f $key, $value
     }
 }
+
+class SFxQueryDimension : SFxClient {
+
+    SFxQueryDimension([string]$query) : base('dimension', 'GET') {
+        $this.Uri = $this.Uri + '?query={0}' -f $query
+    }
+
+    [SFxQueryDimension] OrderBy([string]$orderBy) {
+        $this.Uri = $this.Uri + '&orderBy={10}' -f $orderBy
+        return $this
+    }
+
+    [SFxQueryDimension] Offset([string]$offset) {
+        $this.Uri = $this.Uri + '&offset={10}' -f $offset
+        return $this
+    }
+
+    [SFxQueryDimension] Limit([string]$limit) {
+        $this.Uri = $this.Uri + '&limit={10}' -f $limit
+        return $this
+    }
+
+}
