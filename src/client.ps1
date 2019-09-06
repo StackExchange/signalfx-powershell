@@ -4,8 +4,8 @@ class SFxClient {
     [string]$Method
     [hashtable] hidden $Headers = @{}
 
-    SFxClient($path, $method) {
-        $this.Uri = 'https://api.{0}.signalfx.com/v2/{1}' -f $this.Realm, $path
+    SFxClient($endpoint,$path, $method) {
+        $this.Uri = 'https://{0}.{1}.signalfx.com/v2/{2}' -f $endpoint, $this.Realm, $path
         $this.Method = $method
     }
 
@@ -23,22 +23,25 @@ class SFxClient {
         return $this
     }
 
-
     [object] Invoke() {
         return Invoke-RestMethod -Uri $this.Uri -Headers $this.Headers -ContentType 'application/json' -Method $this.Method
+    }
+
+    [int64] GetTimeStamp() {
+        return [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
     }
 }
 
 class SFxGetDimension : SFxClient {
 
-    SFxGetDimension([string]$key, [string]$value) : base('dimension', 'GET') {
+    SFxGetDimension([string]$key, [string]$value) : base('api', 'dimension', 'GET') {
         $this.Uri = $this.Uri + '/{0}/{1}' -f $key, $value
     }
 }
 
 class SFxQueryDimension : SFxClient {
 
-    SFxQueryDimension([string]$query) : base('dimension', 'GET') {
+    SFxQueryDimension([string]$query) : base('api', 'dimension', 'GET') {
         $this.Uri = $this.Uri + '?query={0}' -f $query
     }
 
@@ -57,4 +60,43 @@ class SFxQueryDimension : SFxClient {
         return $this
     }
 
+}
+
+class SFxPostEvent : SFxClient {
+    [hashtable] hidden $body = @{}
+
+    SFxPostEvent([string]$eventType) :base('ingest', 'event', 'POST') {
+        $this.body.Add('eventType', $eventType)
+        $this.body.Add('timestamp', $this.GetTimeStamp())
+        $this.body.Add('category', 'USER_DEFINED')
+    }
+
+    [SFxPostEvent] SetCategory ([string]$category) {
+        $this.body["category"] = $category
+        return $this
+    }
+
+    [SFxPostEvent] AddDimension ([string]$key, [string]$value) {
+        if ($this.body.ContainsKey('dimensions')) {
+            $this.body.dimensions.Add($key, $value)
+        } else {
+            $this.body.Add('dimensions', @{$key = $value})
+        }
+        return $this
+    }
+
+    [SFxPostEvent] AddProperty ([string]$key, [string]$value) {
+        if ($this.body.ContainsKey('properties')) {
+            $this.body.properties.Add($key, $value)
+        } else {
+            $this.body.Add('properties', @{$key = $value})
+        }
+        return $this
+    }
+
+    [object] Invoke() {
+        #$bodyArray = , $this.body
+        $json = '[{0}]' -f ($this.body | ConvertTo-Json)
+        return Invoke-RestMethod -Uri $this.Uri -Headers $this.Headers -ContentType 'application/json' -Method $this.Method -Body $json
+    }
 }
