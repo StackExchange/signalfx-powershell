@@ -3,8 +3,9 @@ class SFxClient {
     [string]$Uri
     [string]$Method
     [hashtable] hidden $Headers = @{}
+    [hashtable] hidden $Body = @{}
 
-    SFxClient($endpoint,$path, $method) {
+    SFxClient($endpoint, $path, $method) {
         $this.Uri = 'https://{0}.{1}.signalfx.com/v2/{2}' -f $endpoint, $this.Realm, $path
         $this.Method = $method
     }
@@ -24,7 +25,19 @@ class SFxClient {
     }
 
     [object] Invoke() {
-        return Invoke-RestMethod -Uri $this.Uri -Headers $this.Headers -ContentType 'application/json' -Method $this.Method
+
+        $parameters = @{
+            Uri = $this.Uri
+            Headers = $this.Headers
+            ContentType = 'application/json'
+            Method = $this.Method
+        }
+
+        if ($this.Body.Count -gt 0) {
+            $parameters["Body"] = '[{0}]' -f ($this.body | ConvertTo-Json)
+        }
+
+        return Invoke-RestMethod @parameters
     }
 
     [int64] GetTimeStamp() {
@@ -32,16 +45,26 @@ class SFxClient {
     }
 }
 
-class SFxGetDimension : SFxClient {
+class SFxClientApi : SFxClient {
+    SFxClientApi ($path, $method) : base ('api', $path, $method) {}
+}
 
-    SFxGetDimension([string]$key, [string]$value) : base('api', 'dimension', 'GET') {
+class SFxClientIngest : SFxClient {
+    SFxClientIngest ($path, $method) : base ('ingest', $path, $method) {}
+}
+
+# https://developers.signalfx.com/metrics_metadata_reference.html#tag/Retrieve-Dimension-Metadata-Name-Value
+class SFxGetDimension : SFxClientApi {
+
+    SFxGetDimension([string]$key, [string]$value) : base('dimension', 'GET') {
         $this.Uri = $this.Uri + '/{0}/{1}' -f $key, $value
     }
 }
 
-class SFxQueryDimension : SFxClient {
+# https://developers.signalfx.com/metrics_metadata_reference.html#operation/Retrieve%20Dimensions%20Query
+class SFxQueryDimension : SFxClientApi {
 
-    SFxQueryDimension([string]$query) : base('api', 'dimension', 'GET') {
+    SFxQueryDimension([string]$query) : base('dimension', 'GET') {
         $this.Uri = $this.Uri + '?query={0}' -f $query
     }
 
@@ -62,10 +85,10 @@ class SFxQueryDimension : SFxClient {
 
 }
 
-class SFxPostEvent : SFxClient {
-    [hashtable] hidden $body = @{}
+# https://developers.signalfx.com/ingest_data_reference.html#operation/Send%20Custom%20Events
+class SFxPostEvent : SFxClientIngest {
 
-    SFxPostEvent([string]$eventType) :base('ingest', 'event', 'POST') {
+    SFxPostEvent([string]$eventType) :base('event', 'POST') {
         $this.body.Add('eventType', $eventType)
         $this.body.Add('timestamp', $this.GetTimeStamp())
         $this.body.Add('category', 'USER_DEFINED')
@@ -92,11 +115,5 @@ class SFxPostEvent : SFxClient {
             $this.body.Add('properties', @{$key = $value})
         }
         return $this
-    }
-
-    [object] Invoke() {
-        #$bodyArray = , $this.body
-        $json = '[{0}]' -f ($this.body | ConvertTo-Json)
-        return Invoke-RestMethod -Uri $this.Uri -Headers $this.Headers -ContentType 'application/json' -Method $this.Method -Body $json
     }
 }
