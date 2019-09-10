@@ -69,7 +69,7 @@ function Get-SFxDimensionMetadata {
         $Limit,
 
         [Parameter(Position=2, ParameterSetName="KV")]
-        [Parameter(Position=4, Mandatory, ParameterSetName="Query")]
+        [Parameter(Position=4, ParameterSetName="Query")]
         [string]
         $ApiToken
     )
