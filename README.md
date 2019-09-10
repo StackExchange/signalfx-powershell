@@ -14,6 +14,8 @@ The client will loads the appropriate token necessary for the _cmdlet_ from the 
 * **Session tokens - aka User API Access Tokens**
   * `SFX_USER_TOKEN`
 
+You can also use `Set-SFxToken` to set either or both environment variables.
+
 SignalFx [documentation](https://developers.signalfx.com/basics/authentication.html) on API Authentication.
 
 ### Cmdlets

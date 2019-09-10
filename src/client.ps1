@@ -6,6 +6,9 @@ class SFxClient {
     [hashtable] hidden $Body = @{}
 
     SFxClient($endpoint, $path, $method) {
+        if (Test-Path Env:\SFX_REALM) {
+            $this.SetRealm($env:SFX_REALM)
+        }
         $this.Uri = 'https://{0}.{1}.signalfx.com/v2/{2}' -f $endpoint, $this.Realm, $path
         $this.Method = $method
     }
