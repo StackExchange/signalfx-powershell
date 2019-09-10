@@ -33,7 +33,7 @@
 .OUTPUTS
     Object
 .NOTES
-    General notes
+    The SignalFx API will return the string "OK" if the POST is successful.
 #>
 function Publish-SFxEvent {
     [CmdletBinding()]
