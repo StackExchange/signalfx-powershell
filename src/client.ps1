@@ -46,11 +46,19 @@ class SFxClient {
 }
 
 class SFxClientApi : SFxClient {
-    SFxClientApi ($path, $method) : base ('api', $path, $method) {}
+    SFxClientApi ($path, $method) : base ('api', $path, $method) {
+        if (Test-Path Env:\SFX_USER_TOKEN) {
+            $this.SetToken($env:SFX_USER_TOKEN)
+        }
+    }
 }
 
 class SFxClientIngest : SFxClient {
-    SFxClientIngest ($path, $method) : base ('ingest', $path, $method) {}
+    SFxClientIngest ($path, $method) : base ('ingest', $path, $method) {
+        if (Test-Path Env:\SFX_ACCESS_TOKEN) {
+            $this.SetToken($env:SFX_ACCESS_TOKEN)
+        }
+    }
 }
 
 # https://developers.signalfx.com/metrics_metadata_reference.html#tag/Retrieve-Dimension-Metadata-Name-Value
