@@ -12,7 +12,7 @@
 RootModule = 'signalfx-powershell.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.1'
+ModuleVersion = '0.1.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,10 +27,10 @@ Author = 'Chris Hunt'
 CompanyName = 'Stack Overflow'
 
 # Copyright statement for this module
-Copyright = '(c) Stack Overflow. All rights reserved.'
+Copyright = '(c) 2019 Stack Exchange Inc. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = 'A PowerShell client for the SignalFx API. https://developers.signalfx.com/'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -116,7 +116,7 @@ PrivateData = @{
         # Prerelease = ''
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
-        RequireLicenseAcceptance = $true
+        RequireLicenseAcceptance = $false
 
         # External dependent modules of this module
         # ExternalModuleDependencies = @()
