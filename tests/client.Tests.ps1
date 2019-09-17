@@ -21,6 +21,18 @@ Describe "client" {
             $base.Realm | Should -Be 'test_realm'
             $base.Uri | Should -Be 'https://test_endpoint.test_realm.signalfx.com/v2/test_path'
         }
+
+        It 'SetToken should cet "X-SF-TOKEN" Headers' {
+            $base = [SFxClient]::new('test_endpoint', 'test_path', 'test_method').SetToken('test_token')
+            $base.Headers['X-SF-TOKEN'] | Should -Be 'test_token'
+        }
+
+        It 'SetToken should change "X-SF-TOKEN" Headers' {
+            $base = [SFxClient]::new('test_endpoint', 'test_path', 'test_method').SetToken('test_token').SetToken('new_token')
+            $base.Headers['X-SF-TOKEN'] | Should -Be 'new_token'
+        }
+
+        # TODO: Test SFxClient.Invoke Body formatting
     }
 
     Context 'API Client' {
