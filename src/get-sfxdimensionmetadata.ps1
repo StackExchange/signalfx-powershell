@@ -56,15 +56,15 @@ function Get-SFxDimensionMetadata {
         [string]
         $Query,
 
-        [Parameter(Position = 1, Mandatory, ParameterSetName = "Query")]
+        [Parameter(Position = 1, ParameterSetName = "Query")]
         [string]
         $OrderBy,
 
-        [Parameter(Position = 2, Mandatory, ParameterSetName = "Query")]
+        [Parameter(Position = 2, ParameterSetName = "Query")]
         [int]
         $Offset,
 
-        [Parameter(Position = 3, Mandatory, ParameterSetName = "Query")]
+        [Parameter(Position = 3, ParameterSetName = "Query")]
         [int]
         $Limit,
 
@@ -88,13 +88,13 @@ function Get-SFxDimensionMetadata {
                     $request.Offset($Offset) | Out-Null
                 }
                 if ($PSBoundParameters.ContainsKey('Limit')) {
-                    $request.Limit($Limit)
+                    $request.Limit($Limit) | Out-Null
                 }
             }
         }
 
         if ($PSBoundParameters.ContainsKey('ApiToken')) {
-            $request.SetToken($ApiToken)
+            $request.SetToken($ApiToken) | Out-Null
         }
 
         $request.Invoke()
