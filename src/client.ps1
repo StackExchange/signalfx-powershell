@@ -2,16 +2,36 @@ class SFxClient {
     [string]$Realm = 'us1'
     [string]$Uri
     [string]$Method
+
+    [string] hidden $Endpoint
+    [string] hidden $Path
     [hashtable] hidden $Headers = @{}
     [hashtable] hidden $Body = @{}
 
+    [string] hidden $EnvName_Realm = 'SFX_REALM'
+    [string] hidden $EnvName_AccessToken = 'SFX_ACCESS_TOKEN'
+    [string] hidden $EnvName_UserToken = 'SFX_USER_TOKEN'
+
+
+
     SFxClient($endpoint, $path, $method) {
-        $this.Uri = 'https://{0}.{1}.signalfx.com/v2/{2}' -f $endpoint, $this.Realm, $path
+        if ([Environment]::GetEnvironmentVariables().Contains($this.EnvName_Realm)) {
+            $this.SetRealm([Environment]::GetEnvironmentVariable($this.EnvName_Realm))
+        }
+        $this.Endpoint = $endpoint
+        $this.Path = $path
         $this.Method = $method
+
+        $this.ConstructUri()
+    }
+
+    [void] ConstructUri() {
+        $this.Uri = 'https://{0}.{1}.signalfx.com/v2/{2}' -f $this.Endpoint, $this.Realm, $this.Path
     }
 
     [SFxClient] SetRealm([string]$realm) {
         $this.Realm = $realm
+        $this.ConstructUri()
         return $this
     }
 
@@ -77,17 +97,17 @@ class SFxQueryDimension : SFxClientApi {
     }
 
     [SFxQueryDimension] OrderBy([string]$orderBy) {
-        $this.Uri = $this.Uri + '&orderBy={10}' -f $orderBy
+        $this.Uri = $this.Uri + '&orderBy={0}' -f $orderBy
         return $this
     }
 
-    [SFxQueryDimension] Offset([string]$offset) {
-        $this.Uri = $this.Uri + '&offset={10}' -f $offset
+    [SFxQueryDimension] Offset([int]$offset) {
+        $this.Uri = $this.Uri + '&offset={0}' -f $offset
         return $this
     }
 
-    [SFxQueryDimension] Limit([string]$limit) {
-        $this.Uri = $this.Uri + '&limit={10}' -f $limit
+    [SFxQueryDimension] Limit([int]$limit) {
+        $this.Uri = $this.Uri + '&limit={0}' -f $limit
         return $this
     }
 
@@ -103,6 +123,10 @@ class SFxPostEvent : SFxClientIngest {
     }
 
     [SFxPostEvent] SetCategory ([string]$category) {
+        $valid = @("USER_DEFINED", "ALERT", "AUDIT", "JOB", "COLLECTED", "SERVICE_DISCOVERY", "EXCEPTION")
+        if ($valid -notcontains $category) {
+            throw "Invalid Category. Valid optiosn are [$($valid -join ', ')]"
+        }
         $this.body["category"] = $category
         return $this
     }

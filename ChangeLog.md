@@ -1,4 +1,11 @@
-# 0.1.0
+# Changes
+
+## 0.1.1
+
+* Adds Set-SFxRealm
+* Adds Set-SFxToken
+
+## 0.1.0
 
 _Initial Release_
 
