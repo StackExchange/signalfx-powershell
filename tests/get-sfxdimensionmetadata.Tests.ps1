@@ -36,11 +36,23 @@ Describe "Get-SFxDimensionMetaData" {
             }
         }
 
-        Context 'By Query with OrderBy' {
+        Context 'By Query with JParameters' {
             It "SFxQueryDimension with OrderBy" {
                 $parameterCollection = Get-SFxDimensionMetadata -Query test_query -OrderBy test_value
 
                 $parameterCollection.Uri | Should -Be 'https://api.us1.signalfx.com/v2/dimension?query=test_query&orderBy=test_value'
+            }
+
+            It "SFxQueryDimension with Offset" {
+                $parameterCollection = Get-SFxDimensionMetadata -Query test_query -Offset 1
+
+                $parameterCollection.Uri | Should -Be 'https://api.us1.signalfx.com/v2/dimension?query=test_query&offset=1'
+            }
+
+            It "SFxQueryDimension with Limit" {
+                $parameterCollection = Get-SFxDimensionMetadata -Query test_query -Limit 1
+
+                $parameterCollection.Uri | Should -Be 'https://api.us1.signalfx.com/v2/dimension?query=test_query&limit=1'
             }
         }
 
