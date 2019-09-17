@@ -5,8 +5,8 @@ class SFxClient {
 
     [string] hidden $Endpoint
     [string] hidden $Path
-    [hashtable] hidden $Headers = @{}
-    [hashtable] hidden $Body = @{}
+    [hashtable] hidden $Headers = @{ }
+    [hashtable] hidden $Body = @{ }
 
     [string] hidden $EnvName_Realm = 'SFX_REALM'
     [string] hidden $EnvName_AccessToken = 'SFX_ACCESS_TOKEN'
@@ -38,7 +38,8 @@ class SFxClient {
     [SFxClient] SetToken([string]$token) {
         if ($this.Headers.ContainsKey('X-SF-TOKEN')) {
             $this.Headers['X-SF-TOKEN'] = $token
-        } else {
+        }
+        else {
             $this.Headers.Add('X-SF-TOKEN', $token)
         }
         return $this
@@ -47,10 +48,10 @@ class SFxClient {
     [object] Invoke() {
 
         $parameters = @{
-            Uri = $this.Uri
-            Headers = $this.Headers
+            Uri         = $this.Uri
+            Headers     = $this.Headers
             ContentType = 'application/json'
-            Method = $this.Method
+            Method      = $this.Method
         }
 
         if ($this.Body.Count -gt 0) {
@@ -134,8 +135,9 @@ class SFxPostEvent : SFxClientIngest {
     [SFxPostEvent] AddDimension ([string]$key, [string]$value) {
         if ($this.body.ContainsKey('dimensions')) {
             $this.body.dimensions.Add($key, $value)
-        } else {
-            $this.body.Add('dimensions', @{$key = $value})
+        }
+        else {
+            $this.body.Add('dimensions', @{$key = $value })
         }
         return $this
     }
@@ -143,8 +145,9 @@ class SFxPostEvent : SFxClientIngest {
     [SFxPostEvent] AddProperty ([string]$key, [string]$value) {
         if ($this.body.ContainsKey('properties')) {
             $this.body.properties.Add($key, $value)
-        } else {
-            $this.body.Add('properties', @{$key = $value})
+        }
+        else {
+            $this.body.Add('properties', @{$key = $value })
         }
         return $this
     }

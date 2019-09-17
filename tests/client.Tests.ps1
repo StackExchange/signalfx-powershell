@@ -8,17 +8,14 @@ Describe "client" {
             $this.SetRealm([Environment]::GetEnvironmentVariable('SFX_REALM'))
         }
 
-
-
         It 'Constructor should format $this.Uri' {
-            $base = [SFxClient]::new('test_endpoint','test_path','test_method')
+            $base = [SFxClient]::new('test_endpoint', 'test_path', 'test_method')
             $base.Uri | Should -Be 'https://test_endpoint.us1.signalfx.com/v2/test_path'
             $base.Method | Should -Be 'test_method'
         }
 
-
         It 'SetRealm should update Uri' {
-            $base = [SFxClient]::new('test_endpoint','test_path','test_method')
+            $base = [SFxClient]::new('test_endpoint', 'test_path', 'test_method')
             $base.SetRealm('test_realm')
 
             $base.Realm | Should -Be 'test_realm'
@@ -117,7 +114,7 @@ Describe "client" {
             $postEvent = [SFxPostEvent]::new('test_event').SetCategory("EXCEPTION")
             $postEvent.Body['category'] | Should -Be 'EXCEPTION'
 
-            {[SFxPostEvent]::new('test_event').SetCategory("NOT_VALID")} | Should -Throw
+            { [SFxPostEvent]::new('test_event').SetCategory("NOT_VALID") } | Should -Throw
         }
 
         It 'AddDimension should add a KV pair to Body["dimensions"]' {

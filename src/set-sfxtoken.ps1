@@ -29,12 +29,12 @@
 function Set-SFxToken {
     [CmdletBinding()]
     param (
-        [Parameter(Position=0)]
+        [Parameter(Position = 0)]
         [Alias('SessionToken')]
         [string]
         $UserToken,
 
-        [Parameter(Position=1)]
+        [Parameter(Position = 1)]
         [Alias('AccessToken')]
         [string]
         $OrgToken
@@ -49,7 +49,7 @@ function Set-SFxToken {
         $env:SFX_ACCESS_TOKEN = $OrgToken
     }
 
-<#     TODO: The endpoint https://api.{REALM}.signalfx.com/v2/session manages session tokens.
+    <#     TODO: The endpoint https://api.{REALM}.signalfx.com/v2/session manages session tokens.
     You don’t need a token to create a session token, but you do need to specify the email
     and password of an organization member. #>
 }

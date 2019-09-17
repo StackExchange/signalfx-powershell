@@ -18,8 +18,8 @@
 function Set-SFxRealm {
     [CmdletBinding()]
     param (
-        [Parameter(Position=0, Mandatory)]
-        [ValidateSet('eu0','us0','us1')]
+        [Parameter(Position = 0, Mandatory)]
+        [ValidateSet('eu0', 'us0', 'us1')]
         [string]
         $Realm
     )

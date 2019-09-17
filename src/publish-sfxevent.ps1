@@ -38,26 +38,26 @@
 function Publish-SFxEvent {
     [CmdletBinding()]
     param (
-        [ValidateLength(1,256)]
+        [ValidateLength(1, 256)]
         [ValidateNotNullOrEmpty()]
-        [Parameter(Position=0, Mandatory)]
+        [Parameter(Position = 0, Mandatory)]
         [string]
         $EventType,
 
-        [Parameter(Position=1)]
+        [Parameter(Position = 1)]
         [hashtable]
         $Dimension,
 
-        [Parameter(Position=2)]
+        [Parameter(Position = 2)]
         [hashtable]
         $Property,
 
         [ValidateSet("USER_DEFINED", "ALERT", "AUDIT", "JOB", "COLLECTED", "SERVICE_DISCOVERY", "EXCEPTION")]
-        [Parameter(Position=5)]
+        [Parameter(Position = 5)]
         [string]
         $Category,
 
-        [Parameter(Position=6)]
+        [Parameter(Position = 6)]
         [string]
         $ApiToken
     )

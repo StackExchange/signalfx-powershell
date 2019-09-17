@@ -44,32 +44,32 @@
 function Get-SFxDimensionMetadata {
     [CmdletBinding(DefaultParameterSetName = "KV")]
     param (
-        [Parameter(Position=0, Mandatory, ParameterSetName="KV")]
+        [Parameter(Position = 0, Mandatory, ParameterSetName = "KV")]
         [string]
         $Key,
 
-        [Parameter(Position=1, Mandatory, ParameterSetName="KV")]
+        [Parameter(Position = 1, Mandatory, ParameterSetName = "KV")]
         [string]
         $Value,
 
-        [Parameter(Position=0, Mandatory, ParameterSetName="Query")]
+        [Parameter(Position = 0, Mandatory, ParameterSetName = "Query")]
         [string]
         $Query,
 
-        [Parameter(Position=1, Mandatory, ParameterSetName="Query")]
+        [Parameter(Position = 1, Mandatory, ParameterSetName = "Query")]
         [string]
         $OrderBy,
 
-        [Parameter(Position=2, Mandatory, ParameterSetName="Query")]
+        [Parameter(Position = 2, Mandatory, ParameterSetName = "Query")]
         [int]
         $Offset,
 
-        [Parameter(Position=3, Mandatory, ParameterSetName="Query")]
+        [Parameter(Position = 3, Mandatory, ParameterSetName = "Query")]
         [int]
         $Limit,
 
-        [Parameter(Position=2, ParameterSetName="KV")]
-        [Parameter(Position=4, ParameterSetName="Query")]
+        [Parameter(Position = 2, ParameterSetName = "KV")]
+        [Parameter(Position = 4, ParameterSetName = "Query")]
         [string]
         $ApiToken
     )
