@@ -144,7 +144,7 @@ Describe "client" {
             $postEvent.Body['dimensions']['test_key2'] | Should -Be 'test_value2'
         }
 
-        It 'AddDimension should add a KV pair to Body["dimensions"]' {
+        It 'AddProperty should add a KV pair to Body["properties"]' {
             $postEvent = [SFxPostEvent]::new('test_event').AddProperty('test_key', 'test_value')
 
             $postEvent.Body['properties'].count | Should -Be 1
