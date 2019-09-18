@@ -68,16 +68,16 @@ class SFxClient {
 
 class SFxClientApi : SFxClient {
     SFxClientApi ($path, $method) : base ('api', $path, $method) {
-        if (Test-Path Env:\SFX_USER_TOKEN) {
-            $this.SetToken($env:SFX_USER_TOKEN)
+        if ([Environment]::GetEnvironmentVariables().Contains('SFX_USER_TOKEN')) {
+            $this.SetToken([Environment]::GetEnvironmentVariable('SFX_USER_TOKEN'))
         }
     }
 }
 
 class SFxClientIngest : SFxClient {
     SFxClientIngest ($path, $method) : base ('ingest', $path, $method) {
-        if (Test-Path Env:\SFX_ACCESS_TOKEN) {
-            $this.SetToken($env:SFX_ACCESS_TOKEN)
+        if ([Environment]::GetEnvironmentVariables().Contains('SFX_ACCESS_TOKEN')) {
+            $this.SetToken([Environment]::GetEnvironmentVariable('SFX_ACCESS_TOKEN'))
         }
     }
 }
