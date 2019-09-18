@@ -87,6 +87,18 @@ Describe "client" {
 
     Context 'SFxPostEvent' {
 
+        Mock -CommandName Invoke-RestMethod {
+            param (
+                [string]$Uri,
+                [hashtable]$Headers,
+                [string]$ContentType,
+                [string]$Method,
+                [string]$Body
+            )
+
+            return $PSBoundParameters
+        }
+
         It 'Constructor should format $this.Uri and set minimum Body values' {
             $postEvent = [SFxPostEvent]::new('test_event')
             $postEvent.Uri | Should -Be 'https://ingest.us1.signalfx.com/v2/event'
@@ -159,6 +171,11 @@ Describe "client" {
             $postEvent.Body['properties'].count | Should -Be 1
             $postEvent.Body['properties'].ContainsKey('test_key') | Should -BeTrue
             $postEvent.Body['properties']['test_key'] | Should -Be 'test_value'
+
+            $results = $postEvent.Invoke()
+
+            $results.Body | Should -BeLike '*"test_key": "test_value"*'
+
         }
 
         It 'Multiple AddProperty should add to Body["properties"]' {
@@ -175,6 +192,11 @@ Describe "client" {
             $postEvent.Body['properties']['test_key'] | Should -Be 'test_value'
             $postEvent.Body['properties'].ContainsKey('test_key2') | Should -BeTrue
             $postEvent.Body['properties']['test_key2'] | Should -Be 'test_value2'
+
+            $results = $postEvent.Invoke()
+
+            $results.Body | Should -BeLike '*"test_key": "test_value"*'
+            $results.Body | Should -BeLike '*"test_key2": "test_value2"*'
         }
     }
 }
