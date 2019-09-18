@@ -42,11 +42,11 @@ function Set-SFxToken {
 
 
     if ($PSBoundParameters.ContainsKey('UserToken')) {
-        $env:SFX_USER_TOKEN = $UserToken
+        [Environment]::SetEnvironmentVariable('SFX_USER_TOKEN', $UserToken)
     }
 
     if ($PSBoundParameters.ContainsKey('OrgToken')) {
-        $env:SFX_ACCESS_TOKEN = $OrgToken
+        [Environment]::SetEnvironmentVariable('SFX_ACCESS_TOKEN', $OrgToken)
     }
 
     <#     TODO: The endpoint https://api.{REALM}.signalfx.com/v2/session manages session tokens.
