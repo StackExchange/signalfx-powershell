@@ -36,7 +36,7 @@ Describe "Get-SFxDimensionMetaData" {
             }
         }
 
-        Context 'By Query with JParameters' {
+        Context 'By Query with Parameters' {
             It "SFxQueryDimension with OrderBy" {
                 $parameterCollection = Get-SFxDimensionMetadata -Query test_query -OrderBy test_value
 
