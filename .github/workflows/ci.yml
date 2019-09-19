@@ -12,4 +12,4 @@ jobs:
     - name: Install Pwsh
       uses: docker://mcr.microsoft.com/powershell:7.0.0-preview.3-ubuntu-xenial
       run: |
-        pwsh -c "Install-Module Pester -Force -SkipPublisherCheck
+        pwsh -c "Install-Module Pester -Force -SkipPublisherCheck"
