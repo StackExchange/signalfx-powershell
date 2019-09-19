@@ -10,5 +10,5 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Pester
-      uses: docker://mcr.microsoft.com/powershell:7.0.0-preview.3-ubuntu-xenial
-      run: pwsh -c "Install-Module Pester -Force -SkipPublisherCheck"
+      run: Install-Module Pester -Force -SkipPublisherCheck
+      shell: pwsh
