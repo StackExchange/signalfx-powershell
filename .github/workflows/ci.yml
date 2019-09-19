@@ -13,5 +13,5 @@ jobs:
       run: Install-Module Pester -Force -SkipPublisherCheck
       shell: pwsh
     - name: Run Tests
-      run: Invoke-Pester
+      run: Invoke-Pester -EnableExit
       shell: pwsh
