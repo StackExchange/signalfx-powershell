@@ -2,6 +2,8 @@
 
 _This is a PowerShell wrapper around the SignalFx API._
 
+![](https://github.com/StackExchange/signalfx-powershell/workflows/CI/badge.svg)
+
 ## Usage
 
 ### API Tokens
