@@ -24,3 +24,5 @@ SignalFx [documentation](https://developers.signalfx.com/basics/authentication.h
 
 * **Get-SFxDimensionMetadata** - Retrieves metadata objects for which the metrics name matches the search criteria.
 * **Publish-SFxEvent** - Sends custom events to SignalFx.
+* **Get-SFxAlertMuting** - Retrieves alerting muting rules based on search criteria
+* **New-SFxAlertMuting** - Creates a new alert muting rule
