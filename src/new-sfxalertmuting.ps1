@@ -63,17 +63,17 @@ function New-SFxAlertMuting {
     process {
         $request = [SFxNewAlertMuting]::new($Description)
 
-        if ($PSBoundParameters.ContainsKey('Description')) {
-            Foreach ($key in $Description.Keys) {
-                $request.AddFilter($key, $Property[$key]) | Out-Null
+        if ($PSBoundParameters.ContainsKey('Filter')) {
+            Foreach ($key in $Filter.Keys) {
+                $request.AddFilter($key, $Filter[$key]) | Out-Null
             }
         }
 
-        if ($PSBoundParameters.Contains('StartTime')) {
+        if ($PSBoundParameters.ContainsKey('StartTime')) {
             $request.SetStartTime($StartTime) | Out-Null
         }
 
-        if ($PSBoundParameters.Contains('Duration')) {
+        if ($PSBoundParameters.ContainsKey('Duration')) {
             $request.SetStopTime($Duration) | Out-Null
         }
 
