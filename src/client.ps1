@@ -237,7 +237,7 @@ class SFxNewAlertMuting : SFxClientApi {
 
     [SFxNewAlertMuting] SetStopTime([string]$timespan) {
 
-        $pattern = [regex]"(\d+)([smhdMY]{1})"
+        $pattern = [regex]"(\d+)([mhd]{1})"
         $match = $pattern.Match($timespan)
 
         if ($match.Length -ne 2) {
@@ -248,10 +248,6 @@ class SFxNewAlertMuting : SFxClientApi {
             $scale = $match.Groups[2].Value
 
             [DateTime]$datetime = switch -casesensitive ($scale) {
-                's' {
-                    $this.StartTime.AddSeconds($value)
-                    break
-                }
                 'm' {
                     $this.StartTime.AddMinutes($value)
                     break
@@ -262,14 +258,6 @@ class SFxNewAlertMuting : SFxClientApi {
                 }
                 'd' {
                     $this.StartTime.AddDays($value)
-                    break
-                }
-                'M' {
-                    $this.StartTime.AddMonths($value)
-                    break
-                }
-                'Y' {
-                    $this.StartTime.AddYears($value)
                     break
                 }
             }

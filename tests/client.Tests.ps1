@@ -248,14 +248,10 @@ Describe "client" {
             return $PSBoundParameters
         }
 
-        $DiffSec = 1000
         $DiffMin = 60000
         $DiffHr = 3600000
         $DiffDay = 86400000
-        $DiffMoLo = 2419200000
-        $DiffMoHi = 2678400000
-        $DiffYrLo = 31536000000
-        $DiffYrHi = 31622400000
+
         $now = Get-Date
 
         It 'Constructor should format $this.Uri and set minimum Body values' {
@@ -295,13 +291,6 @@ Describe "client" {
             $postMuting.Body['filters']['test_key2'] | Should -Be 'test_value2'
         }
 
-        It 'StopTime should accept 1s' {
-            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
-            $postMuting.SetStopTime('1s')
-
-            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -Be $DiffSec
-        }
-
         It 'StopTime should accept 1m' {
             $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
             $postMuting.SetStopTime('1m')
@@ -321,22 +310,6 @@ Describe "client" {
             $postMuting.SetStopTime('1d')
 
             $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -Be $DiffDay
-        }
-
-        It 'StopTime should accept 1M' {
-            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
-            $postMuting.SetStopTime('1M')
-
-            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeGreaterOrEqual $DiffMoLo
-            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeLessOrEqual $DiffMoHi
-        }
-
-        It 'StopTime should accept 1Y' {
-            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
-            $postMuting.SetStopTime('1Y')
-
-            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeGreaterOrEqual $DiffYrLo
-            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeLessOrEqual $DiffYrHi
         }
 
         It 'StopTime should throw' {
