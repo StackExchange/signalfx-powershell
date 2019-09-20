@@ -199,4 +199,149 @@ Describe "client" {
             $results.Body | Should -BeLike '*"test_key2": "test_value2"*'
         }
     }
+
+    Context 'SFxNewAlertMuting' {
+
+        It 'Constructor should format $this.Uri' {
+            $queryAlertMuting = [SFxQueryAlertMuting]::new('test_query')
+            $queryAlertMuting.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting?query=test_query'
+            $queryAlertMuting.Method | Should -Be 'GET'
+        }
+
+        It 'OrderBy should add "orderBy" query' {
+            $orderBy = [SFxQueryAlertMuting]::new('test_query').OrderBy('test_key')
+            $orderBy.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting?query=test_query&orderby=test_key'
+        }
+
+        It 'Offset should add "include" query' {
+            $include = [SFxQueryAlertMuting]::new('test_query').Include('Open')
+            $include.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting?query=test_query&include=Open'
+        }
+
+        It 'Offset should add "offset" query' {
+            $offset = [SFxQueryAlertMuting]::new('test_query').Offset(1)
+            $offset.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting?query=test_query&offset=1'
+        }
+
+        It 'Limit should add "limit" query' {
+            $limit = [SFxQueryAlertMuting]::new('test_query').Limit(1)
+            $limit.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting?query=test_query&limit=1'
+        }
+
+        It 'Should chain methods' {
+            $chain = [SFxQueryAlertMuting]::new('test_query').OrderBy('test_key').Offset(1).Limit(1)
+            $chain.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting?query=test_query&orderby=test_key&offset=1&limit=1'
+        }
+    }
+
+    Context 'SFxNewAlertMuting' {
+
+        Mock -CommandName Invoke-RestMethod {
+            param (
+                [string]$Uri,
+                [hashtable]$Headers,
+                [string]$ContentType,
+                [string]$Method,
+                [string]$Body
+            )
+
+            return $PSBoundParameters
+        }
+
+        $DiffSec = 1000
+        $DiffMin = 60000
+        $DiffHr = 3600000
+        $DiffDay = 86400000
+        $DiffMoLo = 2419200000
+        $DiffMoHi = 2678400000
+        $DiffYrLo = 31536000000
+        $DiffYrHi = 31622400000
+        $now = Get-Date
+
+        It 'Constructor should format $this.Uri and set minimum Body values' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute')
+            $postMuting.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting'
+            $postMuting.Method | Should -Be 'POST'
+
+            $postMuting.Body.count | Should -Be 3
+            $postMuting.Body['description'] | Should -Be 'test_mute'
+            $postMuting.Body.ContainsKey('startTime') | Should -BeTrue
+            $postMuting.Body.ContainsKey('stopTime') | Should -BeTrue
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -Be $DiffHr
+            $postMuting.Body.ContainsKey('filters') | Should -BeFalse
+        }
+
+        It 'AddFilter should add a KV pair to Body["filters"]' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').AddFilter('test_key', 'test_value')
+
+            $postMuting.Body['filters'].count | Should -Be 1
+            $postMuting.Body['filters'].ContainsKey('test_key') | Should -BeTrue
+            $postMuting.Body['filters']['test_key'] | Should -Be 'test_value'
+        }
+
+        It 'Multiple AddFilter should add to Body["filters"]' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').AddFilter('test_key', 'test_value')
+
+            $postMuting.Body['filters'].count | Should -Be 1
+            $postMuting.Body['filters'].ContainsKey('test_key') | Should -BeTrue
+            $postMuting.Body['filters']['test_key'] | Should -Be 'test_value'
+
+            $null = $postMuting.AddFilter('test_key2', 'test_value2')
+
+            $postMuting.Body['filters'].count | Should -Be 2
+            $postMuting.Body['filters'].ContainsKey('test_key') | Should -BeTrue
+            $postMuting.Body['filters']['test_key'] | Should -Be 'test_value'
+            $postMuting.Body['filters'].ContainsKey('test_key2') | Should -BeTrue
+            $postMuting.Body['filters']['test_key2'] | Should -Be 'test_value2'
+        }
+
+        It 'StopTime should accept 1s' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
+            $postMuting.SetStopTime('1s')
+
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -Be $DiffSec
+        }
+
+        It 'StopTime should accept 1m' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
+            $postMuting.SetStopTime('1m')
+
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -Be $DiffMin
+        }
+
+        It 'StopTime should accept 1h' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
+            $postMuting.SetStopTime('1h')
+
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -Be $DiffHr
+        }
+
+        It 'StopTime should accept 1d' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
+            $postMuting.SetStopTime('1d')
+
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -Be $DiffDay
+        }
+
+        It 'StopTime should accept 1M' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
+            $postMuting.SetStopTime('1M')
+
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeGreaterOrEqual $DiffMoLo
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeLessOrEqual $DiffMoHi
+        }
+
+        It 'StopTime should accept 1Y' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
+            $postMuting.SetStopTime('1Y')
+
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeGreaterOrEqual $DiffYrLo
+            $postMuting.Body['stopTime'] - $postMuting.Body['startTime'] | Should -BeLessOrEqual $DiffYrHi
+        }
+
+        It 'StopTime should throw' {
+            $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
+            { $postMuting.SetStopTime('1z') } | Should -Throw
+        }
+    }
 }

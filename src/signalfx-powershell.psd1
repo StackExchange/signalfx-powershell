@@ -12,7 +12,7 @@
     RootModule        = 'signalfx-powershell.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.1.1'
+    ModuleVersion     = '0.2.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -74,6 +74,7 @@
         'Publish-SFxEvent'
         'Set-SFxRealm'
         'Set-SFxToken'
+        'Get-SFxDimensionMetadata'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -103,10 +104,10 @@
             # Tags = @()
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://github.com/StackExchange/signalfx-powershell/blob/master/License.txt'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/StackExchange/signalfx-powershell'
 
             # A URL to an icon representing this module.
             # IconUri = ''

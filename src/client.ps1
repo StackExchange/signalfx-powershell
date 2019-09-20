@@ -55,7 +55,7 @@ class SFxClient {
         }
 
         if ($this.Body.Count -gt 0) {
-            $parameters["Body"] = '[{0}]' -f ($this.body | ConvertTo-Json)
+            $parameters["Body"] = '[{0}]' -f ($this.Body | ConvertTo-Json)
         }
 
         return Invoke-RestMethod @parameters
@@ -63,6 +63,10 @@ class SFxClient {
 
     [int64] GetTimeStamp() {
         return [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
+    }
+
+    [int64] GetTimeStamp([DateTime]$timestamp) {
+        return [DateTimeOffset]::new($timestamp).ToUnixTimeMilliseconds()
     }
 }
 
@@ -118,9 +122,9 @@ class SFxQueryDimension : SFxClientApi {
 class SFxPostEvent : SFxClientIngest {
 
     SFxPostEvent([string]$eventType) :base('event', 'POST') {
-        $this.body.Add('eventType', $eventType)
-        $this.body.Add('timestamp', $this.GetTimeStamp())
-        $this.body.Add('category', 'USER_DEFINED')
+        $this.Body.Add('eventType', $eventType)
+        $this.Body.Add('timestamp', $this.GetTimeStamp())
+        $this.Body.Add('category', 'USER_DEFINED')
     }
 
     [SFxPostEvent] SetCategory ([string]$category) {
@@ -128,27 +132,149 @@ class SFxPostEvent : SFxClientIngest {
         if ($valid -notcontains $category) {
             throw "Invalid Category. Valid optiosn are [$($valid -join ', ')]"
         }
-        $this.body["category"] = $category
+        $this.Body["category"] = $category
         return $this
     }
 
     [SFxPostEvent] AddDimension ([string]$key, [string]$value) {
-        if ($this.body.ContainsKey('dimensions')) {
-            $this.body.dimensions.Add($key, $value)
+        if ($this.Body.ContainsKey('dimensions')) {
+            $this.Body.dimensions.Add($key, $value)
         }
         else {
-            $this.body.Add('dimensions', @{$key = $value })
+            $this.Body.Add('dimensions', @{$key = $value })
         }
         return $this
     }
 
     [SFxPostEvent] AddProperty ([string]$key, [string]$value) {
-        if ($this.body.ContainsKey('properties')) {
-            $this.body.properties.Add($key, $value)
+        if ($this.Body.ContainsKey('properties')) {
+            $this.Body.properties.Add($key, $value)
         }
         else {
-            $this.body.Add('properties', @{$key = $value })
+            $this.Body.Add('properties', @{$key = $value })
         }
         return $this
+    }
+}
+
+# https://developers.signalfx.com/incidents_reference.html#tag/Retrieve-Alert-Muting-Rules-Query
+class SFxQueryAlertMuting : SFxClientApi {
+
+    SFxQueryAlertMuting([string]$query) : base('alertmuting', 'GET') {
+        $this.Uri = $this.Uri + '?query={0}' -f $query
+    }
+
+    [SFxQueryAlertMuting] Include([string]$include) {
+        $this.Uri = $this.Uri + '&include={0}' -f $include
+        return $this
+    }
+
+    [SFxQueryAlertMuting] OrderBy([string]$orderBy) {
+        $this.Uri = $this.Uri + '&orderBy={0}' -f $orderBy
+        return $this
+    }
+
+    [SFxQueryAlertMuting] Offset([int]$offset) {
+        $this.Uri = $this.Uri + '&offset={0}' -f $offset
+        return $this
+    }
+
+    [SFxQueryAlertMuting] Limit([int]$limit) {
+        $this.Uri = $this.Uri + '&limit={0}' -f $limit
+        return $this
+    }
+
+}
+
+# https://developers.signalfx.com/incidents_reference.html#tag/Create-Single-Alert-Muting-Rule
+class SFxNewAlertMuting : SFxClientApi {
+
+    [datetime] hidden $StartTime
+    [datetime] hidden $StopTime
+
+    SFxNewAlertMuting([string]$description) : base('alertmuting', 'POST') {
+        $this.Body.Add('description', $description)
+        $this.SetStartTime()
+        $this.SetStopTime('1h')
+    }
+
+
+    [SFxNewAlertMuting] AddFilter ([string]$key, [string]$value) {
+        if ($this.Body.ContainsKey('filters')) {
+            $this.Body.filters.Add($key, $value)
+        }
+        else {
+            $this.Body.Add('filters', @{$key = $value })
+        }
+        return $this
+    }
+
+    [SFxNewAlertMuting] SetStartTime([DateTime]$timestamp) {
+        $this.StartTime = $timestamp
+        if ($this.Body.ContainsKey('startTime')) {
+            $this.Body['startTime'] = $this.GetTimeStamp($this.StartTime)
+        }
+        else {
+            $this.Body.Add('startTime', $this.GetTimeStamp($this.StartTime))
+        }
+        return $this
+    }
+
+    [SFxNewAlertMuting] SetStartTime() {
+        return $this.SetStartTime([datetime]::Now)
+    }
+
+    [SFxNewAlertMuting] SetStopTime([DateTime]$timestamp) {
+        $this.StopTime = $timestamp
+        if ($this.Body.ContainsKey('stopTime')) {
+            $this.Body['stopTime'] = $this.GetTimeStamp($this.StopTime)
+        }
+        else {
+            $this.Body.Add('stopTime', $this.GetTimeStamp($this.StopTime))
+        }
+        return $this
+    }
+
+    [SFxNewAlertMuting] SetStopTime([string]$timespan) {
+
+        $pattern = [regex]"(\d+)([smhdMY]{1})"
+        $match = $pattern.Match($timespan)
+
+        if ($match.Length -ne 2) {
+            throw "Not a valid Timespan format"
+        }
+        else {
+            $value = $match.Groups[1].Value
+            $scale = $match.Groups[2].Value
+
+            [DateTime]$datetime = switch -casesensitive ($scale) {
+                's' {
+                    $this.StartTime.AddSeconds($value)
+                    break
+                }
+                'm' {
+                    $this.StartTime.AddMinutes($value)
+                    break
+                }
+                'h' {
+                    $this.StartTime.AddHours($value)
+                    break
+                }
+                'd' {
+                    $this.StartTime.AddDays($value)
+                    break
+                }
+                'M' {
+                    $this.StartTime.AddMonths($value)
+                    break
+                }
+                'Y' {
+                    $this.StartTime.AddYears($value)
+                    break
+                }
+            }
+
+            return $this.SetStopTime($datetime)
+        }
     }
 }
