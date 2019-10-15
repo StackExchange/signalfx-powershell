@@ -6,3 +6,4 @@
 . "$PSScriptRoot\publish-sfxevent.ps1"
 . "$PSScriptRoot\set-sfxtoken.ps1"
 . "$PSScriptRoot\set-sfxrealm.ps1"
+. "$PSScriptRoot\publish-sfxmetricbackfill.ps1"
