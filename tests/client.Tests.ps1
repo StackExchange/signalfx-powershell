@@ -368,7 +368,7 @@ Describe "client" {
             $backfill.Body.ToString() | Should -Be '{"timestamp":631213200000,"value":1} {"timestamp":631213201000,"value":2} '
         }
 
-        It 'AddValue should be fast' {
+        It 'AddValue should be fast for 360 entries' {
             $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
 
             $timer = [System.Diagnostics.Stopwatch]::new()
@@ -379,7 +379,8 @@ Describe "client" {
             $timer.Stop()
 
             $backfill.Body.Length | Should -BeGreaterThan 13320
-            $timer.ElapsedMilliseconds | Should -BeLessThan 20
+            # This typically runs in 10ms on a workstation, but cane take more an a CI agent
+            $timer.ElapsedMilliseconds | Should -BeLessThan 50
         }
 
     }
