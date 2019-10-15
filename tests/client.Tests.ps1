@@ -317,4 +317,35 @@ Describe "client" {
             { $postMuting.SetStopTime('1z') } | Should -Throw
         }
     }
+
+    Context 'Backfill' {
+
+        Mock -CommandName Invoke-RestMethod {
+            param (
+                [string]$Uri,
+                [hashtable]$Headers,
+                [string]$ContentType,
+                [string]$Method,
+                [string]$Body
+            )
+
+            return $PSBoundParameters
+        }
+
+        It 'Constructor should format $this.Uri' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name')
+            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name'
+            $backfill.Method | Should -Be 'POST'
+        }
+
+        It 'SetMetricType should add "metric_type" query' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge")
+            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name&metric_type=gauge'
+        }
+
+        It 'AddDimension should add "sfxdim_<name>" query' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
+            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name&metric_type=gauge&sfxdim_test_name'
+        }
+    }
 }

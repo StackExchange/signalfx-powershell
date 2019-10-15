@@ -1,5 +1,6 @@
 class SFxClient {
     [string]$Realm = 'us1'
+    [string]$ApiVersion = 'v2'
     [string]$Uri
     [string]$Method
 
@@ -26,7 +27,7 @@ class SFxClient {
     }
 
     [void] ConstructUri() {
-        $this.Uri = 'https://{0}.{1}.signalfx.com/v2/{2}' -f $this.Endpoint, $this.Realm, $this.Path
+        $this.Uri = 'https://{0}.{1}.signalfx.com/{2}/{3}' -f $this.Endpoint, $this.Realm, $this.ApiVersion, $this.Path
     }
 
     [SFxClient] SetRealm([string]$realm) {
@@ -80,6 +81,19 @@ class SFxClientApi : SFxClient {
 
 class SFxClientIngest : SFxClient {
     SFxClientIngest ($path, $method) : base ('ingest', $path, $method) {
+        if ([Environment]::GetEnvironmentVariables().Contains('SFX_ACCESS_TOKEN')) {
+            $this.SetToken([Environment]::GetEnvironmentVariable('SFX_ACCESS_TOKEN'))
+        }
+    }
+}
+
+class SFxClientBackfill : SFxClient {
+    SFxClientBackfill () : base ('backfill', 'backfill', 'POST') {
+        $this.ApiVersion = 'v1'
+
+        # Apply the custom API version for this endpoint
+        $this.ConstructUri()
+
         if ([Environment]::GetEnvironmentVariables().Contains('SFX_ACCESS_TOKEN')) {
             $this.SetToken([Environment]::GetEnvironmentVariable('SFX_ACCESS_TOKEN'))
         }
@@ -264,5 +278,25 @@ class SFxNewAlertMuting : SFxClientApi {
 
             return $this.SetStopTime($datetime)
         }
+    }
+}
+
+# https://developers.signalfx.com/backfill_reference.html#tag/Backfill-MTS
+class SFxBackfill : SFxClientBackfill {
+
+    SFxBackfill($orgId, $metricName) {
+        $this.Uri = $this.Uri + '?orgid={0}&metric={1}' -f $orgId, $metricName
+    }
+
+    [SFxBackfill] SetMetricType([string]$type) {
+        $this.Uri = $this.Uri + '&metric_type={0}' -f $type
+        return $this
+    }
+
+    [SFxBackfill] AddDimension([string[]]$name) {
+        foreach ($n in $name) {
+            $this.Uri = $this.Uri + '&sfxdim_{0}' -f $n
+        }
+        return $this
     }
 }
