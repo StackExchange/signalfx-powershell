@@ -88,6 +88,8 @@ class SFxClientIngest : SFxClient {
 }
 
 class SFxClientBackfill : SFxClient {
+    [Text.StringBuilder] $Body
+
     SFxClientBackfill () : base ('backfill', 'backfill', 'POST') {
         $this.ApiVersion = 'v1'
 
@@ -97,6 +99,23 @@ class SFxClientBackfill : SFxClient {
         if ([Environment]::GetEnvironmentVariables().Contains('SFX_ACCESS_TOKEN')) {
             $this.SetToken([Environment]::GetEnvironmentVariable('SFX_ACCESS_TOKEN'))
         }
+
+        # 360 datapoints an hour in the JSON format SFx is expecting is at least 13,320 chars
+        # So, we might as well initialize the StringBuilder to hold at least that
+        $this.Body = [Text.StringBuilder]::new(13400)
+    }
+
+    [object] Invoke() {
+
+        $parameters = @{
+            Uri         = $this.Uri
+            Headers     = $this.Headers
+            ContentType = 'application/json'
+            Method      = $this.Method
+            Body        = $this.Body.ToString()
+        }
+
+        return Invoke-RestMethod @parameters
     }
 }
 
@@ -298,5 +317,9 @@ class SFxBackfill : SFxClientBackfill {
             $this.Uri = $this.Uri + '&sfxdim_{0}' -f $n
         }
         return $this
+    }
+
+    [void] AddValue ([string]$timestamp, [int64]$value) {
+        $this.Body.AppendFormat('{{"timestamp":{0},"value":{1}}} ', $timestamp, $value)
     }
 }

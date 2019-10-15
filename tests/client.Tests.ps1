@@ -332,6 +332,9 @@ Describe "client" {
             return $PSBoundParameters
         }
 
+        $d = get-date -Date 1 -Month 1 -Year 1990 -Hour 12 -Minute 0 -Second 0
+        $timestamp = 631213200000
+
         It 'Constructor should format $this.Uri' {
             $backfill = [SFxBackfill]::new('test_id', 'test_name')
             $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name'
@@ -347,5 +350,37 @@ Describe "client" {
             $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
             $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name&metric_type=gauge&sfxdim_test_name'
         }
+
+        It 'AddValue should add JSON object stream to Body' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
+
+            $backfill.AddValue($timestamp, 1)
+
+            $backfill.Body.ToString() | Should -Be '{"timestamp":631213200000,"value":1} '
+        }
+
+        It 'JSON object stream should be whitespace delimited' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
+
+            $backfill.AddValue($timestamp, 1)
+            $backfill.AddValue(($timestamp+1000), 2)
+
+            $backfill.Body.ToString() | Should -Be '{"timestamp":631213200000,"value":1} {"timestamp":631213201000,"value":2} '
+        }
+
+        It 'AddValue should be fast' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
+
+            $timer = [System.Diagnostics.Stopwatch]::new()
+            $timer.Start()
+            for ($i = 0; $i -lt 360; $i++) {
+                $backfill.AddValue(($timestamp+$i*1000), ($i+1))
+            }
+            $timer.Stop()
+
+            $backfill.Body.Length | Should -BeGreaterThan 13320
+            $timer.ElapsedMilliseconds | Should -BeLessThan 20
+        }
+
     }
 }
