@@ -63,11 +63,11 @@ class SFxClient {
     }
 
     [int64] GetTimeStamp() {
-        return [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
+        return [DateTimeOffset]::Now.ToUniversalTime().ToUnixTimeMilliseconds()
     }
 
     [int64] GetTimeStamp([DateTime]$timestamp) {
-        return [DateTimeOffset]::new($timestamp).ToUnixTimeMilliseconds()
+        return [DateTimeOffset]::new($timestamp.ToUniversalTime()).ToUnixTimeMilliseconds()
     }
 }
 
@@ -100,7 +100,7 @@ class SFxClientBackfill : SFxClient {
             $this.SetToken([Environment]::GetEnvironmentVariable('SFX_ACCESS_TOKEN'))
         }
 
-        # 360 datapoints an hour in the JSON format SFx is expecting is at least 13,320 chars
+        # At least 360 datapoints an hour in the JSON format SFx is expecting is at least 13,320 chars
         # So, we might as well initialize the StringBuilder to hold at least that
         $this.Body = [Text.StringBuilder]::new(13400)
     }
