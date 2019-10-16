@@ -312,10 +312,8 @@ class SFxBackfill : SFxClientBackfill {
         return $this
     }
 
-    [SFxBackfill] AddDimension([string[]]$name) {
-        foreach ($n in $name) {
-            $this.Uri = $this.Uri + '&sfxdim_{0}' -f $n
-        }
+    [SFxBackfill] AddDimension ([string]$key, [string]$value) {
+        $this.Uri = $this.Uri + '&sfxdim_{0}={1}' -f $key, $value
         return $this
     }
 

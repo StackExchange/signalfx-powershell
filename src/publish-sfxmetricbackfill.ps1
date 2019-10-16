@@ -59,7 +59,7 @@ function Publish-SFxMetricBackfill {
         $Type,
 
         [Parameter(Position=3, Mandatory)]
-        [string[]]
+        [hashtable]
         $Dimension,
 
         [Parameter(Position = 4)]
@@ -78,8 +78,8 @@ function Publish-SFxMetricBackfill {
     begin {
         $request = [SFxBackfill]::new($OrgId, $Name).SetMetricType($Type)
 
-        Foreach ($d in $Dimension) {
-            $request.AddDimension($d) | Out-Null
+        Foreach ($key in $Dimension.Keys) {
+            $request.AddDimension($key, $Dimension[$key]) | Out-Null
         }
 
         if ($PSBoundParameters.ContainsKey('ApiToken')) {

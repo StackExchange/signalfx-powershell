@@ -26,16 +26,16 @@ Describe "Publish-SFxMetricBackfill" {
             }
 
             It 'Should create a valid QueryString' {
-                $results = $data | Publish-SFxMetricBackfill -OrgId A-BC1 -Name test_name -Type counter -Dimension test_dimension
+                $results = $data | Publish-SFxMetricBackfill -OrgId A-BC1 -Name test_name -Type counter -Dimension @{test_dimension='astring'}
 
-                $results.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=A-BC1&metric=test_name&metric_type=counter&sfxdim_test_dimension'
+                $results.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=A-BC1&metric=test_name&metric_type=counter&sfxdim_test_dimension=astring'
             }
 
             It 'Should pass Unix timestamp values' {
 
                 $results = $data |
                     Select-Object -first 1 |
-                    Publish-SFxMetricBackfill -OrgId A-BC1 -Name test_name -Type counter -Dimension test_dimension
+                    Publish-SFxMetricBackfill -OrgId A-BC1 -Name test_name -Type counter -Dimension @{test_dimension='astring'}
 
                 $object = $results.Body | ConvertFrom-Json
                 $object.TimeStamp | Should -Be $timestamp
@@ -55,7 +55,7 @@ Describe "Publish-SFxMetricBackfill" {
 
                 $results = $data |
                     Select-Object -first 1 |
-                    Publish-SFxMetricBackfill -OrgId A-BC1 -Name test_name -Type counter -Dimension test_dimension
+                    Publish-SFxMetricBackfill -OrgId A-BC1 -Name test_name -Type counter -Dimension @{test_dimension='astring'}
 
                 $object = $results.Body | ConvertFrom-Json
                 $object.TimeStamp | Should -Be $timestamp
