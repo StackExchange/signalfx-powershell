@@ -67,7 +67,7 @@ function Publish-SFxMetricBackfill {
         $ApiToken,
 
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
-        [datetime]
+        [object]
         $Timestamp,
 
         [Parameter(ValueFromPipelineByPropertyName, Mandatory)]
@@ -88,12 +88,19 @@ function Publish-SFxMetricBackfill {
     }
 
     process {
-        $unixtime = $request.GetTimeStamp($Timestamp)
-        $request.AddValue($unixtime, $Value)
+        # TODO: Somehow handle the stict batching requirements
+        # A single call to /backfill must contain one or more hour-long groups of datapoints, with
+        # each hour starting one millisecond after the top of the hour and ending exactly at the top
+        # of the following hour.
+
+        if ($Timestamp.GetType().Name -eq 'DateTime' ) {
+            $Timestamp = $request.GetTimeStamp($Timestamp)
+        }
+        $request.AddValue($Timestamp, $Value)
     }
 
     end {
         Write-Information ("Request URI: {0}" -f $request.Uri)
-        #$request.Invoke()
+        $request.Invoke()
     }
 }
