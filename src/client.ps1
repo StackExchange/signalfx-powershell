@@ -63,7 +63,7 @@ class SFxClient {
     }
 
     [int64] GetTimeStamp() {
-        return [DateTimeOffset]::Now.ToUniversalTime().ToUnixTimeMilliseconds()
+        return [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
     }
 
     [int64] GetTimeStamp([DateTime]$timestamp) {

@@ -21,7 +21,7 @@ Describe "Publish-SFxMetricBackfill" {
             $d = Get-Date -Day 15 -Month 10 -Year 2019 -Hour 15 -Minute 0 -Second 0 -Millisecond 1
             $timestamp = 1571166000001
             $data = for ($i = 0; $i -lt 360; $i++) {
-                [PSCustomObject]@{TimeStamp=($d.AddMilliseconds($i*10000)); Value=$i+1}
+                [PSCustomObject]@{TimeStamp=($d.AddMilliseconds($i*10000).ToUniversalTime()); Value=$i+1}
             }
 
             It 'Should create a valid QueryString' {
@@ -46,7 +46,7 @@ Describe "Publish-SFxMetricBackfill" {
             $d = Get-Date -Day 15 -Month 10 -Year 2019 -Hour 15 -Minute 0 -Second 0 -Millisecond 1
             $timestamp = 1571166000001
             $data = for ($i = 0; $i -lt 360; $i++) {
-                [PSCustomObject]@{TimeStamp=([DateTimeOffset]::new($d.AddMilliseconds($i*10000)).ToUnixTimeMilliseconds()); Value=$i+1}
+                [PSCustomObject]@{TimeStamp=([DateTimeOffset]::new($d.AddMilliseconds($i*10000).ToUniversalTime()).ToUnixTimeMilliseconds()); Value=$i+1}
             }
 
             It 'Should pass Unix timestamp values' {
