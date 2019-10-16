@@ -347,12 +347,12 @@ Describe "client" {
         }
 
         It 'AddDimension should add "sfxdim_<name>" query' {
-            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
-            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name&metric_type=gauge&sfxdim_test_name'
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
+            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name&metric_type=gauge&sfxdim_test_name=astring'
         }
 
         It 'AddValue should add JSON object stream to Body' {
-            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
 
             $backfill.AddValue($timestamp, 1)
 
@@ -360,7 +360,7 @@ Describe "client" {
         }
 
         It 'JSON object stream should be whitespace delimited' {
-            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
 
             $backfill.AddValue($timestamp, 1)
             $backfill.AddValue(($timestamp+1000), 2)
@@ -369,7 +369,7 @@ Describe "client" {
         }
 
         It 'AddValue should be fast for 360 entries' {
-            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name")
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
 
             $timer = [System.Diagnostics.Stopwatch]::new()
             $timer.Start()
