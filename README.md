@@ -26,3 +26,4 @@ SignalFx [documentation](https://developers.signalfx.com/basics/authentication.h
 * **Publish-SFxEvent** - Sends custom events to SignalFx.
 * **Get-SFxAlertMuting** - Retrieves alerting muting rules based on search criteria
 * **New-SFxAlertMuting** - Creates a new alert muting rule
+* **Publish-SFxMetricBackfill** - Sends historical MTS to SignalFx
