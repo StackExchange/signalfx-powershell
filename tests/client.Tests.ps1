@@ -1,6 +1,11 @@
 Describe "client" {
 
-    . "$PSScriptRoot/../src/client.ps1"
+
+    . "$PSScriptRoot/../src/classes.clients.ps1"
+    . "$PSScriptRoot/../src/classes.metadata.ps1"
+    . "$PSScriptRoot/../src/classes.events.ps1"
+    . "$PSScriptRoot/../src/classes.alertmuting.ps1"
+    . "$PSScriptRoot/../src/classes.backfill.ps1"
 
     Context "Base Class" {
 
