@@ -1,4 +1,8 @@
-. "$PSScriptRoot\client.ps1"
+. "$PSScriptRoot\classes.clients.ps1"
+. "$PSScriptRoot\classes.metadata.ps1"
+. "$PSScriptRoot\classes.events.ps1"
+. "$PSScriptRoot\classes.alertmuting.ps1"
+. "$PSScriptRoot\classes.backfill.ps1"
 
 . "$PSScriptRoot\get-sfxdimensionmetadata.ps1"
 . "$PSScriptRoot\get-sfxalertmuting.ps1"
