@@ -72,10 +72,21 @@ class SFxClient {
 }
 
 class SFxClientApi : SFxClient {
+    $delimiter = '?'
+
     SFxClientApi ($path, $method) : base ('api', $path, $method) {
         if ([Environment]::GetEnvironmentVariables().Contains('SFX_USER_TOKEN')) {
             $this.SetToken([Environment]::GetEnvironmentVariable('SFX_USER_TOKEN'))
         }
+    }
+
+    [char] GetDelimiter() {
+        if ($this.delimiter -eq '?') {
+            $this.delimiter = '&'
+            return '?'
+        }
+
+        return $this.delimiter
     }
 }
 

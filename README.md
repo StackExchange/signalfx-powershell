@@ -24,6 +24,10 @@ SignalFx [documentation](https://developers.signalfx.com/basics/authentication.h
 
 * **Get-SFxDimensionMetadata** - Retrieves metadata objects for which the metrics name matches the search criteria.
 * **Publish-SFxEvent** - Sends custom events to SignalFx.
-* **Get-SFxAlertMuting** - Retrieves alerting muting rules based on search criteria
-* **New-SFxAlertMuting** - Creates a new alert muting rule
-* **Publish-SFxMetricBackfill** - Sends historical MTS to SignalFx
+* **Get-SFxAlertMuting** - Retrieves alerting muting rules based on search criteria.
+* **New-SFxAlertMuting** - Creates a new alert muting rule.
+* **Publish-SFxMetricBackfill** - Sends historical MTS to SignalFx.
+* **Get-SFxMember** - Retrieves one or more members of the organization, based on the search criteria specified in the query parameters.
+* **New-SFxMember** - Invites a SignalFx user to the organization. To make this request, you must have administrative access for this organization.
+* **Get-SFxIncidents** - Retrieves the information for all incidents in an organization.
+* **Clear-SFxIncident** - Manually clears the incident identified by the SignalFx-assigned incident ID.

@@ -1,17 +1,6 @@
 # https://developers.signalfx.com/organizations_reference.html#tag/Retrieve-Organization-Members
 class SFxGetMember : SFxClientApi {
-    $delimiter = '?'
-
     SFxGetMember() : base('organization/member', 'GET') {
-    }
-
-    [char] GetDelimiter() {
-        if ($this.delimiter -eq '?') {
-            $this.delimiter = '&'
-            return '?'
-        }
-
-        return $this.delimiter
     }
 
     [SFxGetMember] Query([string]$query) {
