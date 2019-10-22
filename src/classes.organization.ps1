@@ -87,9 +87,4 @@ class SFxRemoveMember : SFxClientApi {
     SFxRemoveMember([string]$id) : base('organization/member', 'DELETE') {
         $this.Uri = $this.Uri + '/{0}' -f $id
     }
-
-    [SFxRemoveMember] RemoveMember([string]$id) {
-        $this.Uri = $this.Uri + '/{0}' -f $id
-        return $this
-    }
 }

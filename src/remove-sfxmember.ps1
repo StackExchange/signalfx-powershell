@@ -13,9 +13,6 @@ function Remove-SFxMember {
     process {
         $request = [SFxRemoveMember]::new($Id)
 
-        if ($PSBoundParameters.ContainsKey('Id')) {
-            $request.RemoveMember($Id) | Out-Null
-        }
         if ($PSBoundParameters.ContainsKey('ApiToken')) {
             $request.SetToken($ApiToken) | Out-Null
         }
