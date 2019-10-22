@@ -1,6 +1,11 @@
 Describe "client" {
 
-    . "$PSScriptRoot/../src/client.ps1"
+
+    . "$PSScriptRoot/../src/classes.clients.ps1"
+    . "$PSScriptRoot/../src/classes.metadata.ps1"
+    . "$PSScriptRoot/../src/classes.events.ps1"
+    . "$PSScriptRoot/../src/classes.alertmuting.ps1"
+    . "$PSScriptRoot/../src/classes.backfill.ps1"
 
     Context "Base Class" {
 
@@ -316,5 +321,72 @@ Describe "client" {
             $postMuting = [SFxNewAlertMuting]::new('test_mute').SetStartTime($now)
             { $postMuting.SetStopTime('1z') } | Should -Throw
         }
+    }
+
+    Context 'Backfill' {
+
+        Mock -CommandName Invoke-RestMethod {
+            param (
+                [string]$Uri,
+                [hashtable]$Headers,
+                [string]$ContentType,
+                [string]$Method,
+                [string]$Body
+            )
+
+            return $PSBoundParameters
+        }
+
+        $d = get-date -Date 1 -Month 1 -Year 1990 -Hour 12 -Minute 0 -Second 0
+        $timestamp = 631213200000
+
+        It 'Constructor should format $this.Uri' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name')
+            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name'
+            $backfill.Method | Should -Be 'POST'
+        }
+
+        It 'SetMetricType should add "metric_type" query' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge")
+            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name&metric_type=gauge'
+        }
+
+        It 'AddDimension should add "sfxdim_<name>" query' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
+            $backfill.Uri | Should -Be 'https://backfill.us1.signalfx.com/v1/backfill?orgid=test_id&metric=test_name&metric_type=gauge&sfxdim_test_name=astring'
+        }
+
+        It 'AddValue should add JSON object stream to Body' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
+
+            $backfill.AddValue($timestamp, 1)
+
+            $backfill.Body.ToString() | Should -Be '{"timestamp":631213200000,"value":1} '
+        }
+
+        It 'JSON object stream should be whitespace delimited' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
+
+            $backfill.AddValue($timestamp, 1)
+            $backfill.AddValue(($timestamp+1000), 2)
+
+            $backfill.Body.ToString() | Should -Be '{"timestamp":631213200000,"value":1} {"timestamp":631213201000,"value":2} '
+        }
+
+        It 'AddValue should be fast for 360 entries' {
+            $backfill = [SFxBackfill]::new('test_id', 'test_name').SetMetricType("gauge").AddDimension("test_name","astring")
+
+            $timer = [System.Diagnostics.Stopwatch]::new()
+            $timer.Start()
+            for ($i = 0; $i -lt 360; $i++) {
+                $backfill.AddValue(($timestamp+$i*1000), ($i+1))
+            }
+            $timer.Stop()
+
+            $backfill.Body.Length | Should -BeGreaterThan 13320
+            # This typically runs in 10ms on a workstation, but cane take more an a CI agent
+            $timer.ElapsedMilliseconds | Should -BeLessThan 50
+        }
+
     }
 }
