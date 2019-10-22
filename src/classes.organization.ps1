@@ -1,3 +1,4 @@
+# https://developers.signalfx.com/organizations_reference.html#tag/Retrieve-Organization-Members
 class SFxGetMember : SFxClientApi {
     $delimiter = '?'
 
@@ -32,4 +33,36 @@ class SFxGetMember : SFxClientApi {
         $this.Uri = $this.Uri + '{0}limit={1}' -f $this.GetDelimiter(), $limit
         return $this
     }
+}
+
+# https://developers.signalfx.com/organizations_reference.html#tag/Invite-Member
+class SFxInviteMember : SFxClientApi {
+    SFxInviteMember([string]$email) : base('organization/member', 'POST') {
+        $this.Body.Add('email', $email)
+        $this.Body.Add('admin', 'false')
+        $this.Body.Add('fullName', [string]::Empty)
+        $this.Body.Add('phone', [string]::Empty)
+        $this.Body.Add('title', [string]::Empty)
+    }
+
+    [SFxInviteMember] SetAdmin() {
+        $this.Body['admin'] = 'true'
+        return $this
+    }
+
+    [SFxInviteMember] SetFullName([string]$name) {
+        $this.Body['fullName'] = $name
+        return $this
+    }
+
+    [SFxInviteMember] SetPhone([string]$phone) {
+        $this.Body['phone'] = $phone
+        return $this
+    }
+
+    [SFxInviteMember] SetTitle([string]$title) {
+        $this.Body['title'] = $title
+        return $this
+    }
+
 }
