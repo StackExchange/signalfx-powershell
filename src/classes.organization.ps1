@@ -85,11 +85,10 @@ class SFxInviteMember : SFxClientApi {
 # https://developers.signalfx.com/organizations_reference.html#tag/Delete-Member-Using-ID
 class SFxRemoveMember : SFxClientApi {
     SFxRemoveMember([string]$id) : base('organization/member', 'DELETE') {
-        $this.Body.Add('id', $id)
+        $this.Uri = $this.Uri + '/{0}' -f $id
     }
 
     [SFxRemoveMember] RemoveMember([string]$id) {
-        $this.Body['id'] = $id
-        return $this
+        $this.Uri = $this.Uri + '/{0}' -f $id
     }
 }
