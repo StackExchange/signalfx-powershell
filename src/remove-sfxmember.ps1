@@ -21,7 +21,6 @@ function Remove-SFxMember {
         }
 
         Write-Information $request.Uri
-        Write-Information $request.Body
         $request.Invoke()
     }
 
