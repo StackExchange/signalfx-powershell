@@ -65,4 +65,19 @@ class SFxInviteMember : SFxClientApi {
         return $this
     }
 
+    [object] Invoke() {
+
+        $parameters = @{
+            Uri         = $this.Uri
+            Headers     = $this.Headers
+            ContentType = 'application/json'
+            Method      = $this.Method
+        }
+
+        if ($this.Body.Count -gt 0) {
+            $parameters["Body"] = $this.Body | ConvertTo-Json
+        }
+
+        return Invoke-RestMethod @parameters
+    }
 }
