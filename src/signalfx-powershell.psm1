@@ -14,3 +14,4 @@
 . "$PSScriptRoot\publish-sfxmetricbackfill.ps1"
 . "$PSScriptRoot\get-sfxmember.ps1"
 . "$PSScriptRoot\new-sfxmember.ps1"
+. "$PSScriptRoot\remove-sfxmember.ps1"
