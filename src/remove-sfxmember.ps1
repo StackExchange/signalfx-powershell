@@ -17,11 +17,11 @@ function Remove-SFxMember {
             $request.SetToken($ApiToken) | Out-Null
         }
         try {
-        Write-Information $request.Uri
-        $request.Invoke()
+            Write-Information $request.Uri
+            $request.Invoke()
         } catch {
-          Write-Host $_.Exception.Response.StatusCode.value__
-          Write-Host $_.Exception.Response.StatusDescription
+            Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__
+            Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
         }
     }
 
