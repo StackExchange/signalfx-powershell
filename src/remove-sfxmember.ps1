@@ -19,9 +19,13 @@ function Remove-SFxMember {
         if ($PSBoundParameters.ContainsKey('ApiToken')) {
             $request.SetToken($ApiToken) | Out-Null
         }
-
+        try {
         Write-Information $request.Uri
         $request.Invoke()
+        } catch {
+          Write-Host $_.Exception.Response.StatusCode.value__
+          Write-Host $_.Exception.Response.StatusDescription
+        }
     }
 
 }
