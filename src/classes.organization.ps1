@@ -78,7 +78,12 @@ class SFxInviteMember : SFxClientApi {
             $parameters["Body"] = $this.Body | ConvertTo-Json
         }
 
+        try {
         return Invoke-RestMethod @parameters
+        } catch {
+          Write-Error "StatusCode:" $_.Exception.Response.StatusCode.value__
+          Write-Error "StatusDescription:" $_.Exception.Response.StatusDescription
+        }
     }
 }
 

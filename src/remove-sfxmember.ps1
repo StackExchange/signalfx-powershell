@@ -20,8 +20,8 @@ function Remove-SFxMember {
             Write-Information $request.Uri
             $request.Invoke()
         } catch {
-            Write-Host "StatusCode:" $_.Exception.Response.StatusCode.value__
-            Write-Host "StatusDescription:" $_.Exception.Response.StatusDescription
+            Write-Error "StatusCode:" $_.Exception.Response.StatusCode.value__
+            Write-Error "StatusDescription:" $_.Exception.Response.StatusDescription
         }
     }
 
