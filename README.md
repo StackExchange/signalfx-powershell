@@ -29,5 +29,6 @@ SignalFx [documentation](https://developers.signalfx.com/basics/authentication.h
 * **Publish-SFxMetricBackfill** - Sends historical MTS to SignalFx.
 * **Get-SFxMember** - Retrieves one or more members of the organization, based on the search criteria specified in the query parameters.
 * **New-SFxMember** - Invites a SignalFx user to the organization. To make this request, you must have administrative access for this organization.
+* **Remove-SFxMember** - Remove a SignalFx user from the organization using their member ID. To make this request, you must have administrative access.
 * **Get-SFxIncidents** - Retrieves the information for all incidents in an organization.
 * **Clear-SFxIncident** - Manually clears the incident identified by the SignalFx-assigned incident ID.
