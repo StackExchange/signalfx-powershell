@@ -68,10 +68,10 @@ class SFxInviteMember : SFxClientApi {
         }
 
         try {
-        return Invoke-RestMethod @parameters
+            return Invoke-RestMethod @parameters
         } catch {
-          Write-Error "StatusCode:" $_.Exception.Response.StatusCode.value__
-          Write-Error "StatusDescription:" $_.Exception.Response.StatusDescription
+              Write-Error "StatusCode: {0}{1}StatusDescription: {2}" $_.Exception.Response.StatusCode.value__, [Environment]::NewLine ,$_.Exception.Response.StatusDescription
+          return $null
         }
     }
 }
