@@ -67,6 +67,18 @@ class SFxInviteMember : SFxClientApi {
             $parameters["Body"] = $this.Body | ConvertTo-Json
         }
 
-        return Invoke-RestMethod @parameters
+        try {
+            return Invoke-RestMethod @parameters
+        } catch {
+              Write-Error "StatusCode: {0}{1}StatusDescription: {2}" $_.Exception.Response.StatusCode.value__, [Environment]::NewLine ,$_.Exception.Response.StatusDescription
+          return $null
+        }
+    }
+}
+
+# https://developers.signalfx.com/organizations_reference.html#tag/Delete-Member-Using-ID
+class SFxRemoveMember : SFxClientApi {
+    SFxRemoveMember([string]$id) : base('organization/member', 'DELETE') {
+        $this.Uri = $this.Uri + '/{0}' -f $id
     }
 }
