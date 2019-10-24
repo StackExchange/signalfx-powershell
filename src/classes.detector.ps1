@@ -5,22 +5,22 @@ class SFxQueryDetector : SFxClientApi {
         $this.Uri = $this.Uri + '?name={0}' -f $name
     }
 
-    [SFxQueryAlertMuting] Id([string]$id) {
+    [SFxQueryDetector] Id([string]$id) {
         $this.Uri = $this.Uri + '&id={0}' -f $id
         return $this
     }
 
-    [SFxQueryAlertMuting] Tags([string]$tag) {
+    [SFxQueryDetector] Tags([string]$tag) {
         $this.Uri = $this.Uri + '&tags={0}' -f $tag
         return $this
     }
 
-    [SFxQueryAlertMuting] Offset([int]$offset) {
+    [SFxQueryDetector] Offset([int]$offset) {
         $this.Uri = $this.Uri + '&offset={0}' -f $offset
         return $this
     }
 
-    [SFxQueryAlertMuting] Limit([int]$limit) {
+    [SFxQueryDetector] Limit([int]$limit) {
         $this.Uri = $this.Uri + '&limit={0}' -f $limit
         return $this
     }
