@@ -12,7 +12,7 @@
     RootModule        = 'signalfx-powershell.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.2.2'
+    ModuleVersion     = '0.2.3'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -21,7 +21,7 @@
     GUID              = 'cba110cc-be5a-41d9-89f4-775298dd4d79'
 
     # Author of this module
-    Author            = 'Chris Hunt'
+    Author            = 'Chris Hunt, Peter Kay'
 
     # Company or vendor of this module
     CompanyName       = 'Stack Overflow'
@@ -79,6 +79,7 @@
         'Publish-SFxMetricBackfill'
         'Get-SFxMember'
         'New-SFxMember'
+        'Remove-SFxMember'
         'Get-SFxIncidents'
         'Clear-SFxIncident'
     )
