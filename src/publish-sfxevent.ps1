@@ -85,6 +85,8 @@ function Publish-SFxEvent {
             $request.SetToken($ApiToken) | Out-Null
         }
 
+        Write-Information $request.Uri
+        Write-Information ($request.Body | ConvertTo-Json)
         $request.Invoke()
     }
 }
