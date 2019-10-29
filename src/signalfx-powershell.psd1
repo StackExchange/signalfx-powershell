@@ -12,7 +12,7 @@
     RootModule        = 'signalfx-powershell.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.2.3'
+    ModuleVersion     = '0.2.4'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -82,6 +82,7 @@
         'Remove-SFxMember'
         'Get-SFxIncidents'
         'Clear-SFxIncident'
+        'New-SFxSessionToken'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

@@ -5,6 +5,7 @@
 . "$PSScriptRoot\classes.backfill.ps1"
 . "$PSScriptRoot\classes.organization.ps1"
 . "$PSScriptRoot\classes.incidents.ps1"
+. "$PSScriptRoot\classes.session.ps1"
 
 . "$PSScriptRoot\get-sfxdimensionmetadata.ps1"
 . "$PSScriptRoot\get-sfxalertmuting.ps1"
@@ -18,3 +19,4 @@
 . "$PSScriptRoot\remove-sfxmember.ps1"
 . "$PSScriptRoot\get-sfxincidents.ps1"
 . "$PSScriptRoot\clear-sfxincident.ps1"
+. "$PSScriptRoot\new-sfxsessiontoken.ps1"
