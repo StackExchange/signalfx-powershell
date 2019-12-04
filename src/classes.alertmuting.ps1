@@ -27,6 +27,23 @@ class SFxQueryAlertMuting : SFxClientApi {
 
 }
 
+class SFxMuteFilter {
+    [bool] $NOT = $false
+    [string] $property
+    [string] $propertyValue
+
+    SFxMuteFilter([string]$p, [string]$v) {
+        $this.property = $p
+        $this.propertyValue = $v
+    }
+
+    SFxMuteFilter([bool]$n, [string]$p, [string]$v) {
+        $this.NOT = $n
+        $this.property = $p
+        $this.propertyValue = $v
+    }
+}
+
 # https://developers.signalfx.com/incidents_reference.html#tag/Create-Single-Alert-Muting-Rule
 class SFxNewAlertMuting : SFxClientApi {
 
@@ -39,15 +56,20 @@ class SFxNewAlertMuting : SFxClientApi {
         $this.SetStopTime('1h')
     }
 
+    [SFxNewAlertMuting] AddFilter ([bool]$not, [string]$key, [string]$value) {
+        $filter = [SFxMuteFilter]::new($not, $key, $value)
 
-    [SFxNewAlertMuting] AddFilter ([string]$key, [string]$value) {
         if ($this.Body.ContainsKey('filters')) {
-            $this.Body.filters.Add($key, $value)
+            $this.Body.filters += $filter
         }
         else {
-            $this.Body.Add('filters', @{$key = $value })
+            $this.Body.Add('filters', @( $filter ))
         }
         return $this
+    }
+
+    [SFxNewAlertMuting] AddFilter ([string]$key, [string]$value) {
+        return $this.AddFilter($false, $key, $value)
     }
 
     [SFxNewAlertMuting] SetStartTime([DateTime]$timestamp) {
@@ -105,5 +127,21 @@ class SFxNewAlertMuting : SFxClientApi {
 
             return $this.SetStopTime($datetime)
         }
+    }
+
+    [object] Invoke() {
+
+        $parameters = @{
+            Uri         = $this.Uri
+            Headers     = $this.Headers
+            ContentType = 'application/json'
+            Method      = $this.Method
+        }
+
+        if ($this.Body.Count -gt 0) {
+            $parameters["Body"] = ConvertTo-Json $this.Body
+        }
+
+        return Invoke-RestMethod @parameters
     }
 }

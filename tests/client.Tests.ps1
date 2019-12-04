@@ -276,24 +276,28 @@ Describe "client" {
             $postMuting = [SFxNewAlertMuting]::new('test_mute').AddFilter('test_key', 'test_value')
 
             $postMuting.Body['filters'].count | Should -Be 1
-            $postMuting.Body['filters'].ContainsKey('test_key') | Should -BeTrue
-            $postMuting.Body['filters']['test_key'] | Should -Be 'test_value'
+            $postMuting.Body['filters'][0].NOT | Should -BeFalse
+            $postMuting.Body['filters'][0].property | Should -Be 'test_key'
+            $postMuting.Body['filters'][0].propertyValue | Should -Be 'test_value'
         }
 
         It 'Multiple AddFilter should add to Body["filters"]' {
             $postMuting = [SFxNewAlertMuting]::new('test_mute').AddFilter('test_key', 'test_value')
 
             $postMuting.Body['filters'].count | Should -Be 1
-            $postMuting.Body['filters'].ContainsKey('test_key') | Should -BeTrue
-            $postMuting.Body['filters']['test_key'] | Should -Be 'test_value'
+            $postMuting.Body['filters'][0].NOT | Should -BeFalse
+            $postMuting.Body['filters'][0].property | Should -Be 'test_key'
+            $postMuting.Body['filters'][0].propertyValue | Should -Be 'test_value'
 
             $null = $postMuting.AddFilter('test_key2', 'test_value2')
 
             $postMuting.Body['filters'].count | Should -Be 2
-            $postMuting.Body['filters'].ContainsKey('test_key') | Should -BeTrue
-            $postMuting.Body['filters']['test_key'] | Should -Be 'test_value'
-            $postMuting.Body['filters'].ContainsKey('test_key2') | Should -BeTrue
-            $postMuting.Body['filters']['test_key2'] | Should -Be 'test_value2'
+            $postMuting.Body['filters'][0].NOT | Should -BeFalse
+            $postMuting.Body['filters'][0].property | Should -Be 'test_key'
+            $postMuting.Body['filters'][0].propertyValue | Should -Be 'test_value'
+            $postMuting.Body['filters'][1].NOT | Should -BeFalse
+            $postMuting.Body['filters'][1].property | Should -Be 'test_key2'
+            $postMuting.Body['filters'][1].propertyValue | Should -Be 'test_value2'
         }
 
         It 'StopTime should accept 1m' {
