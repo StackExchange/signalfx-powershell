@@ -1,4 +1,4 @@
-function Get-SFxIncidents {
+function Get-SFxIncident {
     [CmdletBinding()]
     param (
 

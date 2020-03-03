@@ -12,7 +12,7 @@
     RootModule        = 'signalfx-powershell.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.2.5'
+    ModuleVersion     = '0.3.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -80,7 +80,7 @@
         'Get-SFxMember'
         'New-SFxMember'
         'Remove-SFxMember'
-        'Get-SFxIncidents'
+        'Get-SFxIncident'
         'Clear-SFxIncident'
         'New-SFxSessionToken'
         'Get-SFxMetricMetadata'
