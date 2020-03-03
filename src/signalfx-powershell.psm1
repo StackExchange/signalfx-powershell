@@ -17,7 +17,7 @@
 . "$PSScriptRoot\get-sfxmember.ps1"
 . "$PSScriptRoot\new-sfxmember.ps1"
 . "$PSScriptRoot\remove-sfxmember.ps1"
-. "$PSScriptRoot\get-sfxincidents.ps1"
+. "$PSScriptRoot\get-sfxincident.ps1"
 . "$PSScriptRoot\clear-sfxincident.ps1"
 . "$PSScriptRoot\new-sfxsessiontoken.ps1"
 . "$PSScriptRoot\get-sfxmetricmetadata.ps1"
