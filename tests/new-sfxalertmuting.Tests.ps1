@@ -35,7 +35,8 @@ Describe "New-SFxAlertMuting" {
                 $request = New-SFxAlertMuting -Description test_mute -Filter @{'test_key'='test_value'}
 
                 $request.Uri | Should -Be 'https://api.us1.signalfx.com/v2/alertmuting'
-                $request.Body | Should -Match '"test_key": "test_value"'
+                $request.Body | Should -Match '"property": "test_key",'
+                $request.Body | Should -Match '"propertyValue": "test_value"'
             }
 
             $testDate = Get-Date '2022-01-02 03:04:05-0:00'
