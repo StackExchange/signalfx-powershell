@@ -37,9 +37,15 @@ class SfxPostDataPoint : SFxClientIngest {
         return $this
     }
 
+    [SfxPostDataPoint] AddData ([long]$value, [hashtable]$dimensions) {
+        $this.Data += [SfxDataPoint]::new($dimensions, $this.Metric, $value)
+
+        return $this
+    }
+
     [object] Invoke() {
 
-        $datahash = @{"$($this.type)" = $this.Data}
+        $datahash = @{"$($this.Type.ToLower())" = $this.Data}
 
         $parameters = @{
             Uri         = $this.Uri
