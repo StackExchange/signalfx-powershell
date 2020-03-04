@@ -6,6 +6,7 @@
 . "$PSScriptRoot\classes.organization.ps1"
 . "$PSScriptRoot\classes.incidents.ps1"
 . "$PSScriptRoot\classes.session.ps1"
+. "$PSScriptRoot\classes.datapoint.ps1"
 
 . "$PSScriptRoot\get-sfxdimensionmetadata.ps1"
 . "$PSScriptRoot\get-sfxalertmuting.ps1"
@@ -21,3 +22,6 @@
 . "$PSScriptRoot\clear-sfxincident.ps1"
 . "$PSScriptRoot\new-sfxsessiontoken.ps1"
 . "$PSScriptRoot\get-sfxmetricmetadata.ps1"
+. "$PSScriptRoot\new-sfxmetric.ps1"
+. "$PSScriptRoot\add-sfxmetricdata.ps1"
+. "$PSScriptRoot\publish-sfxmetric.ps1"
