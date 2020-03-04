@@ -1,4 +1,4 @@
-Describe "Get-SFxAlertMuting" {
+Describe "New-SFxMetric" {
 
     Import-Module "$PSScriptRoot\..\src\signalfx-powershell.psd1" -Force
 
