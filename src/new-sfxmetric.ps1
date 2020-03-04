@@ -8,7 +8,7 @@ function New-SfxMetric {
 
         [ValidateLength(1,256)]
         [Parameter(Position = 1, Mandatory)]
-        [ParameterType]
+        [string]
         $Metric,
 
         [Parameter(Position = 2)]
