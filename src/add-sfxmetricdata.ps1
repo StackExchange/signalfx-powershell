@@ -17,7 +17,6 @@ function Add-SfxMetricData {
     begin { }
 
     process {
-        $InputObject.AddData($Value)
 
         if ($PSBoundParameters.ContainsKey('Dimension')) {
             $InputObject.AddData($Value, $Dimension)
