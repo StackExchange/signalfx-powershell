@@ -31,4 +31,5 @@ SignalFx [documentation](https://developers.signalfx.com/basics/authentication.h
 * **New-SFxMember** - Invites a SignalFx user to the organization. To make this request, you must have administrative access for this organization.
 * **Remove-SFxMember** - Remove a SignalFx user from the organization using their member ID. To make this request, you must have administrative access.
 * **Get-SFxIncidents** - Retrieves the information for all incidents in an organization.
+* **Get-SFxIncidentsReport** - _Experimental_. Generates a couple simple, precanned reports about recent Incidents.
 * **Clear-SFxIncident** - Manually clears the incident identified by the SignalFx-assigned incident ID.
