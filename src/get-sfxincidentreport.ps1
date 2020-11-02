@@ -25,33 +25,53 @@
     Experimental. These reports may not work for you.
 #>
 function Get-SfxIncidentReport {
-    [CmdletBinding(DefaultParameterSetName='byDetector')]
+    [CmdletBinding(DefaultParameterSetName = 'byDetector')]
     param (
         [Parameter(Position = 0)]
         [int]
         $Days = 7,
 
-        [Parameter(ParameterSetName='byDetector')]
+        [Parameter(ParameterSetName = 'byDetector')]
         [switch]
         $ByDetector,
 
-        [Parameter(ParameterSetName='SignalLossByHost')]
+        [Parameter(ParameterSetName = 'SignalLossByHost')]
         [switch]
-        $SignalLossByGost
+        $SignalLossByHost
     )
 
     $incidents = GetRecentIncidents -days $Days
 
     switch ($PsCmdlet.ParameterSetName) {
         "byDetector" {
-            $incidents | Group-Object DetectorName -NoElement | Sort-Object -Property Count -Descending
+            $group = $incidents | Group-Object DetectorName # -NoElement | Sort-Object -Property Count -Descending
+            foreach ($item in ($group | Sort-Object -Property Count -Descending) ) {
+                $avgDur = $item.Group.Duration.totalseconds | Measure-Object -Minimum -Maximum -Average
+                [pscustomobject]@{
+                    Detector = $item.Name
+                    Count    = $item.Count
+                    AvgDur   = [timespan]::new(0, 0, $avgDur.Average)
+                    MinDur   = [timespan]::new(0, 0, $avgDur.Minimum)
+                    MaxDur   = [timespan]::new(0, 0, $avgDur.Maximum)
+                }
+            }
         }
         "SignalLossByHost" {
-            $incidents | Where-Object DetectorName -eq 'host.loss_of_signal' | ForEach-Object {
+            $group = $incidents | Where-Object DetectorName -like "*loss*of*signal*" | ForEach-Object {
                 $inputs = $_.Inputs | ConvertFrom-Json
                 $hostvalue = $inputs._S7.key.host
                 $_ | Add-Member -MemberType NoteProperty -Name 'Host' -Value $hostvalue -PassThru
-            } | Group-Object -Property Host -NoElement
+            } | Group-Object -Property Host
+            foreach ($item in ($group | Sort-Object -Property Count -Descending) ) {
+                $avgDur = $item.Group.Duration.totalseconds | Measure-Object -Minimum -Maximum -Average
+                [pscustomobject]@{
+                    Host   = $item.Name
+                    Count  = $item.Count
+                    AvgDur = [timespan]::new(0, 0, $avgDur.Average)
+                    MinDur = [timespan]::new(0, 0, $avgDur.Minimum)
+                    MaxDur = [timespan]::new(0, 0, $avgDur.Maximum)
+                }
+            }
         }
     }
 }
@@ -75,7 +95,7 @@ function GetRecentIncidents {
 
             $firstEvent = $incident.events | Sort-Object timestamp -desc | Select-Object -first 1
 
-            $duration = if ($incident.duration) { [Timespan]$incident.duration } else { $null }
+            $duration = if ($incident.duration) { [timespan]::FromMilliseconds($incident.duration) } else { $null }
 
             [PSCustomObject]@{
                 Active                    = [bool]$incident.active
@@ -97,8 +117,8 @@ function GetRecentIncidents {
         $incidents += $data
         $oldest = $incidents | Sort-Object -Property TimestampUtc | Select-Object -First 1 -ExpandProperty TimestampUtc
         $count += $batch.count
-        if ($count -eq 0) {break}
+        if ($count -eq 0) { break }
     }
 
-    $incidents | Where-Object {$_.TimestampUtc -gt $cutoff} | Sort-Object -Property TimestampUtc
+    $incidents | Where-Object { $_.TimestampUtc -gt $cutoff } | Sort-Object -Property TimestampUtc
 }
