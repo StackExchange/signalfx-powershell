@@ -9,11 +9,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-    
+
     steps:
     - uses: actions/checkout@v1
     - name: Install Pester
-      run: Install-Module Pester -Force -SkipPublisherCheck
+      run: Install-Module Pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck
       shell: pwsh
     - name: Run Tests
       run: Invoke-Pester -EnableExit
