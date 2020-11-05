@@ -29,7 +29,7 @@ jobs:
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
-        $modulelist = "${{ steps.psmodulecache.inputs.modules-to-cache }}"
+        $modulelist = "Requirements:2.3.6, Pester:4.10.1"
         Write-Host $modulelist
         $modules = $modulelist.Split(',').Trim()
         foreach ($module in $modules) {
