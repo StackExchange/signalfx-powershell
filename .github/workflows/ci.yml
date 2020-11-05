@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   test:
@@ -12,9 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Install Pester
-      run: Install-Module Pester -RequiredVersion 4.10.1 -Force -SkipPublisherCheck
+    - name: Install Requirements
+      run: Install-Module Requirements -RequiredVersion 2.3.6 -Force -SkipPublisherCheck
       shell: pwsh
-    - name: Run Tests
-      run: Invoke-Pester -EnableExit
+    - name: Run Build Script
+      run: .\build.ps1
       shell: pwsh
