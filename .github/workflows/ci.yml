@@ -30,9 +30,11 @@ jobs:
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
         $modulelist = "${{ steps.psmodulecache.inputs.modules-to-cache }}"
+        Write-Host $modulelist
         $modules = $modulelist.Split(',').Trim()
         foreach ($module in $modules) {
           $name, $version = $module.Split(':')
+          Write-Host $module "-" $name "-" $version
           Install-Module -Name $name -RequiredVersion $version -ErrorAction Stop
         }
     - name: Run Build Script
