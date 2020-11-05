@@ -9,6 +9,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
+    env:
+      psmodules: Requirements:2.3.6, Pester:4.10.1
 
     steps:
     - name: Check out repository code
@@ -17,7 +19,7 @@ jobs:
       id: psmodulecache
       uses: potatoqualitee/psmodulecache@v1
       with:
-        modules-to-cache: Requirements:2.3.6, Pester:4.10.1
+        modules-to-cache: ${{jobs.test.env.psmodules}}
     - name: Setup PowerShell module cache
       id: cacher
       uses: actions/cache@v2
@@ -29,7 +31,7 @@ jobs:
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
-        $modulelist = "Requirements:2.3.6, Pester:4.10.1"
+        $modulelist = "${{jobs.test.env.psmodules}}"
         Write-Host $modulelist
         $modules = $modulelist.Split(',').Trim()
         foreach ($module in $modules) {
