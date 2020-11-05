@@ -72,7 +72,7 @@ $build = & {
             Describe = "Invoke-Pester"
             Test     = {
                 Write-Host ''
-                $results = Invoke-Pester -Path "$PSScriptRoot\tests" -Show Summary -PassThru
+                $results = Invoke-Pester -Path "$PSScriptRoot\tests" -Show Failed,Summary -PassThru
                 $results.FailedCount -eq 0
             }
         }
