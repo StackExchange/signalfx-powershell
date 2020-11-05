@@ -23,20 +23,23 @@ jobs:
       uses: actions/cache@v2
       with:
           path: ${{ steps.psmodulecache.outputs.modulepath }}
-          key: ${{ steps.psmodulecache.outputs.keygen }}
+          key: ${{ runner.os }}-${{ steps.psmodulecache.outputs.keygen }}
     - name: Install required PowerShell modules
       if: steps.cacher.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-          $modules = "${{ steps.psmodulecache.outputs.needed }}" -split ','
-          $modules | foreach-object {
-            $module, $version = $_.Trim() -split ':'
-            Install-Module -Name $module -RequiredVersion $version -ErrorAction Stop
+          $modulelist = "${{ steps.psmodulecache.inputs.modules-to-cache }}"
+          $modules = $modulelist.Split(',').Trim()
+          foreach ($module in $modules) {
+            $name, $version = $module.Split(':')
+            Install-Module -Name $name -RequiredVersion $version -ErrorAction Stop
           }
     - name: Run Build Script
-      run: .\build.ps1
       shell: pwsh
+      run: |
+      Import-Module Requirements
+      .\build.ps1
     - name: Upload module artifact
       uses: actions/upload-artifact@v2
       with:

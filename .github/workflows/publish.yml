@@ -1,8 +1,8 @@
-name: Publish module
+name: Publish
 
 on:
-    release:
-      types: [created]
+  release:
+    types: [created]
 
   jobs:
     publish-to-gallery:
