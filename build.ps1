@@ -12,7 +12,8 @@ $build = & {
             Test     = { Test-Path "$PSScriptRoot\release\signalfx" }
             Set      = {
                 $manifestTemplate = Import-PowerShellDataFile -Path "$PSScriptRoot\src\signalfx-powershell.psd1"
-                mkdir "$PSScriptRoot\release\signalfx"
+                New-Item -Name release -Path $PSScriptRoot -ItemType Directory
+                New-Item -Name signalfx -Path "$PSScriptRoot\release\" -ItemType Directory
 
                 Get-Content -Path "$PSScriptRoot\src\classes.clients.ps1" -Raw | Set-Content -Path "$PSScriptRoot\release\signalfx\signalfx.psm1" -Force
                 Get-ChildItem -Path "$PSScriptRoot\src\" -filter "classes*" | Where-Object Name -ne 'classes.clients.ps1' | ForEach-Object {
@@ -63,7 +64,7 @@ $build = & {
                 $loadedModule.Version -eq [version]"4.10.1" -and $loadedModule.Count -eq 1
             }
             Set      = {
-                Remove-Module -Name Pester
+                Remove-Module -Name Pester -ErrorAction SilentlyContinue
                 Import-Module -Name Pester -RequiredVersion 4.10.1
             }
         }
