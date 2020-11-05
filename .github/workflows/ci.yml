@@ -11,7 +11,8 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Check out repository code
+      uses: actions/checkout@v2
     - name: Set required PowerShell modules
       id: psmodulecache
       uses: potatoqualitee/psmodulecache@v1
@@ -36,3 +37,8 @@ jobs:
     - name: Run Build Script
       run: .\build.ps1
       shell: pwsh
+    - name: Upload module artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: signalfx-module
+        path: release/

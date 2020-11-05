@@ -1,0 +1,19 @@
+name: Publish module
+
+on:
+    release:
+      types: [created]
+
+  jobs:
+    publish-to-gallery:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: signalfx-module
+      - name: Publish
+        env:
+          NUGET_KEY: ${{ secrets.PSGALLERYAPIKEY }}
+        shell: pwsh
+        run: Publish-Module -Path /release/signalfx -NuGetApiKey $env:NUGET_KEY -Verbose
