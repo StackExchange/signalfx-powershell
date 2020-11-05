@@ -19,7 +19,7 @@ jobs:
       id: psmodulecache
       uses: potatoqualitee/psmodulecache@v1
       with:
-        modules-to-cache: ${{jobs.test.env.psmodules}}
+        modules-to-cache: ${{ env.psmodules }}
     - name: Setup PowerShell module cache
       id: cacher
       uses: actions/cache@v2
@@ -31,7 +31,7 @@ jobs:
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
-        $modulelist = "${{jobs.test.env.psmodules}}"
+        $modulelist = $env:psmodules
         Write-Host $modulelist
         $modules = $modulelist.Split(',').Trim()
         foreach ($module in $modules) {
