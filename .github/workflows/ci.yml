@@ -58,7 +58,7 @@ jobs:
 
     - name: Build
       shell: pwsh
-      run: .\build.ps1 -Clean -Build -CI -Bootstrap
+      run: .\build.ps1 -Clean -Build
 
     - uses: actions/upload-artifact@v2
       with:
