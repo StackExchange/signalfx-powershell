@@ -5,13 +5,18 @@ on:
     types: [created]
 
 jobs:
-  publish-to-gallery:
+  publish:
+
     runs-on: ubuntu-latest
+
     steps:
-    - name: Download a single artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: signalfx-module
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Build
+      shell: pwsh
+      run: .\build.ps1 -Clean -Build
+
     - name: Publish
       env:
         NUGET_KEY: ${{ secrets.PSGALLERYAPIKEY }}
