@@ -1,0 +1,24 @@
+name: Publish
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Build
+      shell: pwsh
+      run: .\build.ps1 -Clean -Build
+
+    - name: Publish
+      env:
+        NUGET_KEY: ${{ secrets.PSGALLERYAPIKEY }}
+      shell: pwsh
+      run: Publish-Module -Path /release/signalfx -NuGetApiKey $env:NUGET_KEY -Verbose
