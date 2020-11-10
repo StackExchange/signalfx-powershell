@@ -39,13 +39,53 @@ jobs:
           Write-Host $module "-" $name "-" $version
           Install-Module -Name $name -RequiredVersion $version -ErrorAction Stop
         }
-    - name: Run Build Script
+
+    - name: Bootstrap agent
+      shell: pwsh
+      run: .\build.ps1 -Bootstrap
+
+    - name: Test
+      shell: pwsh
+      run: .\build.ps1 -Test -CI
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      psmodules: Requirements:2.3.6, Pester:4.10.1
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Set required PowerShell modules
+      id: psmodulecache
+      uses: potatoqualitee/psmodulecache@v1
+      with:
+        modules-to-cache: ${{ env.psmodules }}
+    - name: Setup PowerShell module cache
+      id: cacher
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.psmodulecache.outputs.modulepath }}
+        key: ${{ runner.os }}-${{ steps.psmodulecache.outputs.keygen }}
+    - name: Install required PowerShell modules
+      if: steps.cacher.outputs.cache-hit != 'true'
       shell: pwsh
       run: |
-        Import-Module Requirements
-        .\build.ps1
-    - name: Upload module artifact
-      uses: actions/upload-artifact@v2
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        $modulelist = $env:psmodules
+        Write-Host $modulelist
+        $modules = $modulelist.Split(',').Trim()
+        foreach ($module in $modules) {
+          $name, $version = $module.Split(':')
+          Write-Host $module "-" $name "-" $version
+          Install-Module -Name $name -RequiredVersion $version -ErrorAction Stop
+        }
+
+    - name: Build
+      shell: pwsh
+      run: .\build.ps1 -Clean -Build -CI -Bootstrap
+
+    - uses: actions/upload-artifact@v2
       with:
-        name: signalfx-module
-        path: release/
+        name: signalfx
+        path: release/signalfx/
