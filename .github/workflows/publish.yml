@@ -21,4 +21,4 @@ jobs:
       env:
         NUGET_KEY: ${{ secrets.PSGALLERYAPIKEY }}
       shell: pwsh
-      run: Publish-Module -Path /release/signalfx -NuGetApiKey $env:NUGET_KEY -Verbose
+      run: Publish-Module -Path ./release/signalfx -NuGetApiKey $env:NUGET_KEY -Verbose
