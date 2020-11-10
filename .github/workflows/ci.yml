@@ -53,6 +53,9 @@ jobs:
     needs: test
 
     steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
     - name: Build
       shell: pwsh
       run: .\build.ps1 -Clean -Build -CI -Bootstrap
