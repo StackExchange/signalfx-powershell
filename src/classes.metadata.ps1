@@ -61,3 +61,29 @@ class SFxQueryMetric : SFxClientApi {
 
 }
 
+# https://dev.splunk.com/observability/reference/api/metrics_metadata/latest#endpoint-retrieve-mts-metadata-using-id
+class SFxGetMetricTimeSeries : SFxClientApi {
+
+    SFxGetMetricTimeSeries([string]$id) : base('metrictimeseries', 'GET') {
+        $this.Uri = $this.Uri + '/{0}' -f $id
+    }
+}
+
+# https://dev.splunk.com/observability/reference/api/metrics_metadata/latest#endpoint-retrieve-metric-timeseries-metadata
+class SFxQueryMetricTimeSeries : SFxClientApi {
+
+    SFxQueryMetricTimeSeries([string]$query) : base('metrictimeseries', 'GET') {
+        $this.Uri = $this.Uri + '?query={0}' -f $query
+    }
+
+    [SFxQueryMetricTimeSeries] Offset([int]$offset) {
+        $this.Uri = $this.Uri + '&offset={0}' -f $offset
+        return $this
+    }
+
+    [SFxQueryMetricTimeSeries] Limit([int]$limit) {
+        $this.Uri = $this.Uri + '&limit={0}' -f $limit
+        return $this
+    }
+
+}
