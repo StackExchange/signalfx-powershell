@@ -121,7 +121,7 @@ Describe "client" {
 
         It 'Should chain methods' {
             $chain = [SFxQueryMetricTimeSeries]::new('test_query').Offset(1).Limit(1)
-            $chain.Uri | Should -Be 'https://api.us1.signalfx.com/v2/metrictimeseries?query=test_query&orderby=test_key&offset=1&limit=1'
+            $chain.Uri | Should -Be 'https://api.us1.signalfx.com/v2/metrictimeseries?query=test_query&offset=1&limit=1'
         }
     }
 
