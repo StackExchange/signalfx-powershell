@@ -89,6 +89,41 @@ Describe "client" {
             $chain.Uri | Should -Be 'https://api.us1.signalfx.com/v2/dimension?query=test_query&orderby=test_key&offset=1&limit=1'
         }
     }
+    
+    Context 'SFxGetMetricTimeSeries' {
+
+        $getMetricTimeSeries = [SFxGetMetricTimeSeries]::new('test_id')
+
+        It 'Constructor should format $this.Uri' {
+            $getMetricTimeSeries.Uri | Should -Be 'https://api.us1.signalfx.com/v2/metrictimeseries/test_id'
+            $getMetricTimeSeries.Method | Should -Be 'GET'
+        }
+
+    }
+
+    Context 'SFxQueryMetricTimeSeries' {
+
+        It 'Constructor should format $this.Uri' {
+            $queryMetricTimeSeries = [SFxQueryMetricTimeSeries]::new('test_query')
+            $queryMetricTimeSeries.Uri | Should -Be 'https://api.us1.signalfx.com/v2/metrictimeseries?query=test_query'
+            $queryMetricTimeSeries.Method | Should -Be 'GET'
+        }
+
+        It 'Offset should add "offset" query' {
+            $offset = [SFxQueryMetricTimeSeries]::new('test_query').Offset(1)
+            $offset.Uri | Should -Be 'https://api.us1.signalfx.com/v2/metrictimeseries?query=test_query&offset=1'
+        }
+
+        It 'Limit should add "limit" query' {
+            $limit = [SFxQueryMetricTimeSeries]::new('test_query').Limit(1)
+            $limit.Uri | Should -Be 'https://api.us1.signalfx.com/v2/metrictimeseries?query=test_query&limit=1'
+        }
+
+        It 'Should chain methods' {
+            $chain = [SFxQueryMetricTimeSeries]::new('test_query').OrderBy('test_key').Offset(1).Limit(1)
+            $chain.Uri | Should -Be 'https://api.us1.signalfx.com/v2/metrictimeseries?query=test_query&orderby=test_key&offset=1&limit=1'
+        }
+    }
 
     Context 'SFxPostEvent' {
 

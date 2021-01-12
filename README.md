@@ -33,3 +33,4 @@ SignalFx [documentation](https://developers.signalfx.com/basics/authentication.h
 * **Get-SFxIncidents** - Retrieves the information for all incidents in an organization.
 * **Get-SFxIncidentsReport** - _Experimental_. Generates a couple simple, precanned reports about recent Incidents.
 * **Clear-SFxIncident** - Manually clears the incident identified by the SignalFx-assigned incident ID.
+* **Get-SFxMetricTimeSeriesMetadata** - Retrieves metadata for the MTS specified in the query parameter

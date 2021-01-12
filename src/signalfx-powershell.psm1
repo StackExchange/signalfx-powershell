@@ -22,3 +22,4 @@
 . "$PSScriptRoot\get-sfxincidentreport.ps1"
 . "$PSScriptRoot\new-sfxsessiontoken.ps1"
 . "$PSScriptRoot\get-sfxmetricmetadata.ps1"
+. "$PSScriptRoot\get-sfxmetrictimeseriesmetadata.ps1"
