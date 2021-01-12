@@ -54,7 +54,7 @@ Describe "Get-SFxMetricTimeSeriesMetaData" {
         Context 'Set Token' {
 
             It "Should set User Token with Id" {
-                $parameterCollection = Get-SFxMetricTimeSeriesMetadata -Key test_id -ApiToken test_token
+                $parameterCollection = Get-SFxMetricTimeSeriesMetadata -Id test_id -ApiToken test_token
 
                 $parameterCollection.Uri | Should -Be 'https://api.us1.signalfx.com/v2/MetricTimeSeries/test_id'
                 $parameterCollection.Headers.ContainsKey('X-SF-TOKEN') | Should -BeTrue
