@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3.2
+* Add Get-SFxMetricTimeSeriesMetadata cmdlet
+
 ## 0.3.1
 
 * Adds the Get-SFxIncidentsReport cmdlet.
