@@ -2,7 +2,8 @@
 
 ## 0.3.1
 
-WIP
+* Adds the Get-SFxIncidentsReport cmdlet.
+* Refactors the GitHub Workflows
 
 ## 0.1.1
 
