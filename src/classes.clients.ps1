@@ -88,6 +88,27 @@ class SFxClientApi : SFxClient {
 
         return $this.delimiter
     }
+
+    [object] Invoke() {
+
+        $parameters = @{
+            Uri         = $this.Uri
+            Headers     = $this.Headers
+            ContentType = 'application/json'
+            Method      = $this.Method
+        }
+
+        if ($this.Body.Count -gt 0) {
+            $parameters["Body"] = $this.Body | ConvertTo-Json
+        }
+
+        #try {
+            return Invoke-RestMethod @parameters# -ErrorAction Stop
+        #} catch {
+        #    Throw ("StatusCode: {0}{1}StatusDescription: {2}" -f $_.Exception.Response.StatusCode.value__, [Environment]::NewLine, $_.Exception.Message  )
+        #    return $null
+        #}
+    }
 }
 
 class SFxClientIngest : SFxClient {
